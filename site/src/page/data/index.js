@@ -1,11 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class Data extends Component {
-    render() {
-        return (
-            <div>Page data</div>
-        )
-    }
+function Data() {
+  return (
+    <div>Page data</div>
+  )
 }
 
 export default Data;

@@ -1,11 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class Archive extends Component {
-    render() {
-        return (
-            <div>Page Archive</div>
-        )
-    }
+function Archive() {
+  return (
+    <div>Page Archive</div>
+  )
 }
 
 export default Archive;

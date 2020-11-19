@@ -1,11 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class Exception extends Component {
-    render() {
-        return (
-            <div>404</div>
-        )
-    }
+function Exception() {
+  return (
+    <div>404</div>
+  )
 }
 
 export default Exception;

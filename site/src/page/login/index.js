@@ -1,11 +1,22 @@
-import React, { Component } from 'react';
+import React from 'react'
+import { observer } from 'mobx-react'
+import { useUserStore } from '@hooks/useStore'
 
-class Login extends Component {
-    render() {
-        return (
-            <div>Page Login</div>
-        )
-    }
+function Login() {
+  const userStore = useUserStore()
+
+  const handleLogin = () => {
+    // todo
+    userStore.login({ name: 'test' })
+  }
+
+  return (
+    <div onClick={handleLogin}>
+      Page Login：
+      <span>{userStore.user && userStore.user.name}</span>
+    </div>
+  )
+
 }
 
-export default Login;
+export default observer(Login);

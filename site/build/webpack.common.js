@@ -110,10 +110,11 @@ const commonConfig = {
   resolve: {
     extensions: ['.js', '.json', '.jsx'],
     alias: {
-      page: resolve('../src/page'),
-      component: resolve('../src/component'),
-      util: resolve('../src/util'),
-      constant: resolve('../src/constant')
+      "@page": resolve('../src/page'),
+      "@component": resolve('../src/component'),
+      "@util": resolve('../src/util'),
+      "@hooks": resolve('../src/hooks'),
+      "@constant": resolve('../src/constant')
     },
     modules: [resolve('../node_modules')]
   }

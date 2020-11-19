@@ -1,11 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class Create extends Component {
-    render(){
-        return (
-            <div>Page Create</div>
-        )
-    }
+function Create() {
+  return (
+    <div>Page Create</div>
+  )
 }
 
 export default Create;

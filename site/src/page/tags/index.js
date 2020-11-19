@@ -1,11 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class Tags extends Component {
-    render() {
-        return (
-            <div>Page Tags</div>
-        )
-    }
+function Tags() {
+  return (
+    <div>Page Tags</div>
+  )
 }
 
 export default Tags;

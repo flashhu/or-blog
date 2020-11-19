@@ -1,0 +1,23 @@
+.app-page {
+  position: relative;
+  top: 0;
+  left: 0;
+  padding: 20px;
+  padding-left: 100px;
+  transition: left 750ms ease 0s;
+
+  &.short {
+    padding: 20px;
+    left: calc(16px + 30vw);
+    width: calc(70vw - 100px);
+  }
+
+  @media (max-width: 992px) {
+    padding-left: 25px;
+    top: 50px;
+
+    &.short {
+      left: 0;
+    }
+  }
+}
