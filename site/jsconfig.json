@@ -6,7 +6,8 @@
       "@component/*": ["src/component/*"],
       "@util/*": ["src/util/*"],
       "@hooks/*": ["src/hooks/*"],
-      "@constant/*": ["src/constant/*"]
+      "@constant/*": ["src/constant/*"],
+      "@assets/*": ["src/assets/*" ]
     }
   },
   "exclude": [

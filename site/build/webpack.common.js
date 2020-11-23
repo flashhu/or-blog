@@ -47,7 +47,6 @@ const commonConfig = {
       ]
     },{
       test: /\.(css|less)$/,
-      exclude: /node_modules/,
       use: [
         isEnvProduction ? MiniCssExtractPlugin.loader : 'style-loader',  {
           loader: 'css-loader',
@@ -80,7 +79,10 @@ const commonConfig = {
           loader: 'less-loader',
           options: {
             lessOptions: {
-              javascriptEnabled: true
+              javascriptEnabled: true,
+              modifyVars: {
+                'primary-color': 'rgb(239, 58, 80)'
+              }
             }
           }
         }
@@ -114,7 +116,8 @@ const commonConfig = {
       "@component": resolve('../src/component'),
       "@util": resolve('../src/util'),
       "@hooks": resolve('../src/hooks'),
-      "@constant": resolve('../src/constant')
+      "@constant": resolve('../src/constant'),
+      "@assets": resolve('../src/assets')
     },
     modules: [resolve('../node_modules')]
   }
