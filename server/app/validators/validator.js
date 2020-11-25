@@ -47,7 +47,30 @@ class RegisterValidator extends LinValidator {
     }
 }
 
+class TokenValidator extends LinValidator {
+    constructor() {
+        super()
+        this.name = [
+            new Rule('isLength', '昵称长度不符规则', { min: 4, max: 32 })
+        ]
+        this.password = [
+            new Rule('isLength', '密码长度不符规则', { min: 6, max: 32 })
+        ]
+    }
+}
+
+class NotEmptyValidator extends LinValidator {
+    constructor() {
+        super()
+        this.token = [
+            new Rule('isLength', '不允许为空', { min: 1 })
+        ]
+    }
+}
+
 module.exports = {
     PositiveIntegerValidator,
-    RegisterValidator
+    RegisterValidator,
+    TokenValidator,
+    NotEmptyValidator,
 }
