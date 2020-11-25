@@ -22,7 +22,21 @@ class ParameterException extends HttpException {
     }
 }
 
+
+/**
+ * 成功操作 200
+ */
+class Success extends HttpException {
+    constructor(msg, errorCode) {
+        super()
+        this.code = 200
+        this.errorCode = errorCode || 0
+        this.msg = msg || 'success'
+    }
+}
+
 module.exports = {
     HttpException,
-    ParameterException
+    ParameterException,
+    Success
 }

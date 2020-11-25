@@ -1,0 +1,11 @@
+module.exports = {
+    env: 'dev',
+    // env: 'prod',
+    database: {
+        dbName: 'blog_db',
+        host: 'rm-bp1booh30eg441m31fo.mysql.rds.aliyuncs.com',
+        port: 3306,
+        user: 'blog_user',
+        password: 'blog===='
+    }
+}
