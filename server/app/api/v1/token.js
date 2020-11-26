@@ -9,7 +9,7 @@ const router = new Router({
 })
 
 /**
- * 用户登录
+ * 用户登录（未开放注册接口，统一设为管理员权限）
  * @param {string} name 昵称
  * @param {string} password 密码
  */

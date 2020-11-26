@@ -20,6 +20,14 @@ class User extends Model {
         }
         return user
     }
+
+    static async getUserInfo(id) {
+        const user = await User.findByPk(id);
+        if(!user) {
+            throw new NotFound("账号不存在");
+        }
+        return user;
+    }
 }
 
 User.init({

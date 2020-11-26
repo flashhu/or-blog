@@ -10,7 +10,6 @@ function Login() {
   const userStore = useUserStore()
 
   const onFinish = (values) => {
-    console.log('Login Success:', values)
     userStore.login(values)
   };
 
@@ -24,13 +23,13 @@ function Login() {
             name="name"
             rules={[{ required: true, min: 0, max: 20, message: '请输入昵称!' }]}
           >
-            <Input placeholder="昵称" prefix={<UserOutlined />} size="large"/>
+            <Input placeholder="昵称" prefix={<UserOutlined />} size="large" allowClear/>
           </Form.Item>
           <Form.Item
-            name="pwd"
+            name="password"
             rules={[{ required: true, min: 0, max: 20, message: '请输入密码, 长度低于20位!' }]}
           >
-            <Input placeholder="密码" prefix={<LockOutlined />} size="large"/>
+            <Input.Password placeholder="密码" prefix={<LockOutlined />} size="large" allowClear/>
           </Form.Item>
           <Form.Item>
             <Button type="primary" shape="round" className="login-btn" htmlType="submit">提交</Button>
@@ -38,7 +37,7 @@ function Login() {
         </Form>
         <p className="login-tip">
           <span>测试账户：test</span>
-          <span>密码：1</span>
+          <span>密码：1qaSW2</span>
         </p>
       </div>
     </div>

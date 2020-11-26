@@ -21,7 +21,7 @@ class Auth {
             let errMsg = 'token不合法'
             // 有令牌
             if (!userToken || !userToken.name) {
-                throw new Forbbiden(errMsg)
+                throw new Forbbiden(errMsg, 1001)
             }
             // 验证合法性
             try {
@@ -30,12 +30,12 @@ class Auth {
                 if (error.name == 'TokenExpiredError') {
                     errMsg = 'token已过期'
                 }
-                throw new Forbbiden(errMsg)
+                throw new Forbbiden(errMsg, 1001)
             }
 
             if (this.level > decode.scope) {
                 errMsg = '权限不足'
-                throw new Forbbiden(errMsg)
+                throw new Forbbiden(errMsg, 1002)
             }
 
             // console.log('decode: ', decode);

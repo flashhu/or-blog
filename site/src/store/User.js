@@ -1,4 +1,7 @@
-import { makeAutoObservable } from 'mobx'
+import { makeAutoObservable, runInAction } from 'mobx'
+import { message } from 'antd'
+import { get, post } from '@util/request'
+import { API_USER_LOGIN, API_USER_TOKEN_LOGIN } from '@constant/urls'
 
 class UserStore {
   constructor() {
@@ -7,9 +10,30 @@ class UserStore {
 
   user = null
 
-  login(params) {
-    // todo
-    this.user = params;
+  async login(params) {
+    const data = await post(API_USER_LOGIN, params);
+    if(data) {
+      window.localStorage.setItem('token', data.token);
+      runInAction(() => {
+        this.user = { name: params.name };
+      })
+      message.success('登录成功');
+    }
+  }
+
+  async loginWithToken() {
+    const data = await get(API_USER_TOKEN_LOGIN);
+    if (data) {
+      runInAction(() => {
+        this.user = data
+      })
+      message.success('登录成功');
+    }
+  }
+
+  logout() {
+    window.localStorage.removeItem('token');
+    this.user = null;
   }
 }
 
