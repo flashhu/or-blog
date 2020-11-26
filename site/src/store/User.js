@@ -34,6 +34,7 @@ class UserStore {
   logout() {
     window.localStorage.removeItem('token');
     this.user = null;
+    message.success('登出成功');
   }
 }
 

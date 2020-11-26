@@ -1,231 +1,53 @@
-.header {
-    @font-color-blur: #a7a7a7;
-    @font-color-focus: white;
-    @background-color-blur: rgb(246, 246, 246);
-    @background-color-focus: black;
-    @logo-height-normal: 30px;
-    @logo-height-normal-unit: 10px;
-    @logo-height-mini: 25px;
-    @logo-height-mini-unit: 10px;
+@import '@assets/variable.less';
 
-    position: fixed;
-    top: 0px;
-    left: 0px;
-    height: 100%;
-    z-index: 1;
+.header-wrapper {
+    border-bottom: 1px solid #eee;
+    box-shadow: 2px 2px 5px #ebebeb;
 
-    .logoSizeStyle(@theme) {
-        @baseHeight: "logo-height-@{theme}";
-        @baseUnit: "logo-height-@{theme}-unit";
-
-        .logo_high {
-            height: @@baseHeight;
-        }
-
-        .logo_middle {
-            height: @@baseHeight - @@baseUnit;
-        }
-
-        .logo_low {
-            height: @@baseHeight - @@baseUnit * 2;
-        }
-    }
-
-    .menu-toggle {
+    .header-content {
         display: flex;
-        justify-content: center;
         align-items: center;
-        position: relative;
-        top: 0px;
-        height: 100%;
-        width: 80px;
-        margin: 0px;
-        padding: 0px;
-        color: @font-color-blur;
-        background-color: @background-color-blur;
-        cursor: pointer;
-        z-index: 1;
-
-        &:hover, &.active {
-            background: @background-color-focus none repeat scroll 0% 0%;
-            color: @font-color-focus;
-            // will-change: transform, opacity; //加速
-        }
-    }
-
-    .menu-loca {
-        position: absolute;
-        top: 158px;
-        left: 50%;
-        font-weight: 100;
-        letter-spacing: 0.3rem;
-        white-space: nowrap;
-        color: @font-color-blur;
-        text-transform: uppercase;
-        transition: all 500ms cubic-bezier(0.6, 0, 0.4, 1) 0s;
-        transform: translate(-100%, -50%) rotate(-90deg);
-        transform-origin: right center 0px;
-
-        &.active {
-            top: 50%;
-        }
-    }
-
-    .menu-icon {
-        position: fixed;
-        bottom: 30px;
-        left: 40px;
-        height: 20px;
-        font-size: 20px;
-        transition: color 250ms ease 0s, transform 250ms ease 0ms;
-        transform: translateX(-50%);
-
-        &.hide {
-            transform: rotate(-270deg);
-            opacity: 0;
-            transition: opacity 250ms ease 0s, transform 250ms ease 0ms;
-        }
-
-        &:focus {
-            outline: none;
-        }
-    }
-
-    .menu-nav {
-        position: fixed;
-        height: 100%;
-        top: 0;
-        left: 0;
-        width: calc(-104px + 30vw);
-        padding: calc(9.2vw + 105px) calc(8px + 1.1vw) 20px calc(88px + 1.1vw);
-        background: @background-color-focus none repeat scroll 0% 0%;
-        transition: left 750ms ease 0s;
-        font-size: 22px;
-
-        &.hide {
-            left: -100%;
-        }
-
-        & ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .nav-item {
-            text-align: center;
-            margin: 10px 0;
-
-            a {
-                text-decoration: none;
-                color: @font-color-focus;
-            }
-        }
+        justify-content: space-between;
+        max-width: 680px;
+        margin: 0 auto;
+        padding: 15px 5px;
     }
 
     .logo {
+        height: 40px;
+        width: 40px;
+    }
+
+    .menu-item {
+        position: relative;
+        font-size: 16px;
+        margin: 4px 9px;
+        padding: 3px 0;
+        
+        & a {
+            color: #333;
+        }
+
+        &:before {
+            content: "";
             position: absolute;
-            top: calc(9.2vw + 25.344px);
-            left: calc(calc(7.2vw + -13.92px) + calc(70px + 1.1vw));
-            display: flex;
-            justify-content: center;
-            align-items: baseline;
-            z-index: 2;
-
-            div {
-                width: 12px;
-                margin-right: 8px;
-                background-color: @background-color-focus;
-                transition: transform 400ms ease 0s;
-                transition: background 400ms ease 0s, transform 100ms ease 0s;
-            }
-
-            &.active div{
-                background-color: @font-color-focus;
-            }
-
-            &.mini {
-                top: calc(9.2vw + 25.344px);
-                left: 25px;
-            }
-
-            .logoSizeStyle('normal');
-
-            .left_both {
-                border-radius: 12px 0 0 12px;
-            }
-
-            .right_both {
-                border-radius: 0 12px 12px 0;
-            }
-
-            .left_bottom {
-                border-radius: 0 0 0 12px;
-            }
-
-            .right_bottom {
-                border-radius: 0 0 12px 0;
-            }
-
-            .top_right {
-                border-radius: 0 12px 0 0;
-            }
-
-            .diagonal {
-                border-radius: 12px 0 12px 0;
-            }
+            z-index: -1;
+            left: 51%;
+            right: 51%;
+            bottom: 0;
+            background: @primary-color;
+            height: 4px;
+            -webkit-transition-property: left, right;
+            transition-property: left, right;
+            -webkit-transition-duration: 0.3s;
+            transition-duration: 0.3s;
+            -webkit-transition-timing-function: ease-out;
+            transition-timing-function: ease-out;
         }
 
-    @media (max-width: 992px) {
-        min-height: 50px;
-
-        .menu-toggle {
-            position: fixed;
-            top: 0px;
-            height: 50px;
-            width: 100%;
-        }
-
-        .menu-loca {
-            display: none;
-        }
-
-        .menu-icon { 
-            top: 12px;
-            right: 26px;
-            left: auto;
-        }
-
-        .menu-nav {
-            width: 100%;
-            left: 0px;
-            padding: 80px 0 20px 0;
-            font-size: calc(16px + (100vw - 375px) / 45);
-
-            &.hide {
-                left: -100%;
-            }
-        }
-
-        .logo {
-            top: 12px;
-            left: 26px;
-
-            &.mini {
-                top: 12px;
-                left: 26px;
-            }
-
-            .logoSizeStyle('mini');
-
-            & div {
-                opacity: 0;
-            }
-
-            & div:nth-child(1), 
-                div:nth-child(2) {
-                opacity: 1;
-                border-radius: 12px 0 12px 0;
-            }
+        &:hover:before, &:focus:before, &:active:before {
+            left: 0;
+            right: 0;
         }
     }
 }

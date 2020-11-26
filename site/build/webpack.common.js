@@ -81,7 +81,7 @@ const commonConfig = {
             lessOptions: {
               javascriptEnabled: true,
               modifyVars: {
-                'primary-color': 'rgb(239, 58, 80)'
+                'primary-color': '#4E9BD4'
               }
             }
           }
@@ -91,7 +91,8 @@ const commonConfig = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: resolve('../public/index.html')
+      template: resolve('../public/index.html'),
+      favicon: resolve('../public/favicon.ico')
     }),
     new MiniCssExtractPlugin({
       filename: 'static/css/[name].[contenthash:8].css',

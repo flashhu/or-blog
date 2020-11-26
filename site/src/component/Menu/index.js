@@ -1,68 +1,43 @@
 import React, { useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { MenuOutlined, CloseOutlined } from '@ant-design/icons';
-import { Logo, MiniLogo } from './Logo';
-import './index.less'
+import { NavLink, Redirect } from 'react-router-dom';
+import { useUserStore } from '@hooks/useStore';
+import logo from '@assets/book.svg';
+import './index.less';
 
-function Menu({ data, showNav, handleOpenMenu, handleCloseMenu}) {
-    //是否在首页的顶部 || 非首页
-    const [onPageTop, setOnPageTop] = useState(true);
-    const [isHover, setIsHover] = useState(false);
-    const { pathname } = useLocation();
-    const location = pathname.slice(1) || 'menu';
+function Menu({ data }) {
+    const [isRedirect, setIsRedirect] = useState(false);
+    const userStore = useUserStore();
 
-    const handleMouseEnter = () => {
-        setIsHover(true);
-    }
-
-    const handleMouseLeave = () => {
-        setIsHover(false);
-    }
-
-    const handleClickMenu = () => {
-        if (document.documentElement.clientWidth <= 992) {
-            handleCloseMenu();
+    const handleClickLogo = () => {
+        if(userStore.user) {
+            // 登出
+            userStore.logout();
+        } else {
+            // 登录
+            setIsRedirect(true);
         }
     }
 
     return (
-        <header className="header">
-            {   
-                ((!onPageTop || location !== 'menu') && !showNav) ?
-                <MiniLogo active={showNav || isHover} />:
-                <Logo active={showNav} />
-            }
-            <div
-                className={showNav ? "menu-toggle active" : "menu-toggle"}
-                onClick={showNav ? handleCloseMenu: handleOpenMenu}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-            >
-                <div className={!onPageTop || showNav || location !== 'menu' ? "menu-loca active" : "menu-loca"}>{location}</div>
-                <MenuOutlined 
-                    className={showNav ? "menu-icon hide": "menu-icon"}/>
-                <CloseOutlined 
-                    className={showNav ? "menu-icon" : "menu-icon hide"}/>
-            </div>
-            <nav className={showNav ? "menu-nav" : "menu-nav hide"}>
-                <ul>
-                    {data.map((item)=>
-                        <li className="nav-item" key={item.path} onClick={handleClickMenu}>
+        <header className="header-wrapper">
+            {isRedirect && <Redirect to="/login" />}
+            <div className="header-content">
+                <img className="logo" src={logo} onClick={handleClickLogo} />
+                <nav className="menu">
+                    {data.map((item) =>
+                        <span className="menu-item" key={item.path}>
                             <NavLink to={item.path}>{item.name}</NavLink>
-                        </li>
+                        </span>
                     )}
-                </ul>
-            </nav>
+                </nav>
+            </div>
         </header>
     )
 }
 
 Menu.propTypes = {
-    data: PropTypes.array.isRequired, 
-    showNav: PropTypes.bool.isRequired, 
-    handleOpenMenu: PropTypes.func.isRequired, 
-    handleCloseMenu: PropTypes.func.isRequired
+    data: PropTypes.array.isRequired
 }
 
 export default Menu;

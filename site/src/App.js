@@ -8,7 +8,6 @@ import { useUserStore } from '@hooks/useStore';
 
 const Home = lazy(() => import('@page/home'));
 const Archive = lazy(() => import('@page/archive'));
-const Tags = lazy(() => import('@page/tags'));
 const Lab = lazy(() => import('@page/lab'));
 const About = lazy(() => import('@page/about'));
 const Create = lazy(() => import('@page/create'));
@@ -38,7 +37,6 @@ function App() {
               <Switch>
                 <Route path='/' exact component={Home} />
                 <Route path='/archive' exact component={Archive} />
-                <Route path='/tags' exact component={Tags} />
                 <Route path='/lab' exact component={Lab} />
                 <Route path='/about' exact component={About} />
                 <Route path='/article/:id' exact component={Article} />
