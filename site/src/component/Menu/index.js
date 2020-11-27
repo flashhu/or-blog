@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { NavLink, Redirect } from 'react-router-dom';
 import { useUserStore } from '@hooks/useStore';
@@ -23,7 +23,10 @@ function Menu({ data }) {
         <header className="header-wrapper">
             {isRedirect && <Redirect to="/login" />}
             <div className="header-content">
-                <img className="logo" src={logo} onClick={handleClickLogo} />
+                <div className="logo-wrapper">
+                    <img className="logo" src={logo} onClick={handleClickLogo} />
+                    {userStore.user && <span className="logo-name">{userStore.user.name}</span>}
+                </div>
                 <nav className="menu">
                     {data.map((item) =>
                         <span className="menu-item" key={item.path}>

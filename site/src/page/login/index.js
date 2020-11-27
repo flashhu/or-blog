@@ -1,4 +1,3 @@
-import React from 'react'
 import { observer } from 'mobx-react'
 import { Redirect, Link } from 'react-router-dom'
 import { Form, Input, Button } from 'antd'
