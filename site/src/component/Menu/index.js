@@ -30,7 +30,7 @@ function Menu({ data }) {
                 <nav className="menu">
                     {data.map((item) =>
                         <span className="menu-item" key={item.path}>
-                            <NavLink to={item.path}>{item.name}</NavLink>
+                            <NavLink to={item.path} className="hvr-underline">{item.name}</NavLink>
                         </span>
                     )}
                 </nav>

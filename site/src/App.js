@@ -5,6 +5,7 @@ import Login from '@page/Login';
 import GuardedRoute from '@component/GuardedRoute';
 import Layout from '@component/Layout';
 import { useUserStore } from '@hooks/useStore';
+import '@assets/style/global.less'
 
 const Home = lazy(() => import('@page/home'));
 const Archive = lazy(() => import('@page/archive'));

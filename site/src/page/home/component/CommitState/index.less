@@ -1,0 +1,76 @@
+@import '@assets/style/variable.less';
+
+.state-wrapper {
+    display: flex;
+    justify-content: space-between;
+    background-color: #fff;
+    padding: @default-padding;
+
+    .state-title {
+        margin: 10px 0;
+        font-weight: bold;
+
+        &:nth-last-child(1) {
+            font-weight: normal;
+        }
+    }
+
+    .state-icon {
+        margin-right: 5px;
+        color: #00CC99;
+    }
+
+    .state-type {
+        margin-left: 20px;
+    }
+
+    .type-pie {
+        position: relative;
+        top: -12px;
+        width: 250px;
+        height: 200px;
+    }
+
+    .state-item {
+        position: relative;
+        margin: 10px 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        a {
+            position: relative;
+            color: #656D78;
+            transition: all .5s ease;
+
+            &:hover {
+                color: #22252b;
+                border-bottom: 1px solid #333;
+            }
+        }
+    }
+
+    .state-activity ul {
+        margin: 0;
+        max-width: 390px;
+        padding-left: 18px;
+    }
+
+    @media screen and (max-width: 680px){
+        & {
+            flex-direction: column;
+        }
+
+        .type-pie {
+            margin: 0 auto;
+        }
+
+        .state-type {
+            margin-left: 0;
+        }
+
+        .state-title:nth-last-child(1) {
+            margin-bottom: 0;
+        }
+    }
+}
