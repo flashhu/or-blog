@@ -1,10 +1,10 @@
 import { RiseOutlined, RedoOutlined, BulbOutlined } from '@ant-design/icons'
 
-function ActivityState() {
+function ActivityStat() {
     const mockData = [{
         name: '文章标题占位1'
     }, {
-        name: '文章标题占位长度长度长度长度长度长度长度长度长度长度长度长度长度长度长度长度测试'
+        name: '文章标题占位长度长度长度长度长度长度长度测试'
     }]
 
     return (
@@ -15,17 +15,17 @@ function ActivityState() {
             <ul>
                 {mockData.map((item, index) =>
                     <li key={index + '1'} className="state-item">
-                        <a data-title={item.name}>{item.name}</a>
+                        <a className="hvr-underline">{item.name}</a>
                     </li>
                 )}
             </ul>
             <p className="state-title">
-                <RiseOutlined className="state-icon" />最常打开
+                <RiseOutlined className="state-icon" />最常使用
                 </p>
             <ul>
                 {mockData.map((item, index) =>
                     <li key={index + '2'} className="state-item">
-                        <a data-title={item.name}>{item.name}</a>
+                        <a className="hvr-underline">{item.name}</a>
                     </li>
                 )}
             </ul>
@@ -36,4 +36,4 @@ function ActivityState() {
     )
 }
 
-export default ActivityState;
+export default ActivityStat;

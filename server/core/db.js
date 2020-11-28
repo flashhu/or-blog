@@ -47,7 +47,7 @@ sequelize
 
 // Sync all defined models to the DB.
 sequelize
-    .sync({ force: true }) // 重运行时是否清空数据
+    .sync({ force: false }) // 重运行时是否清空数据
     .then(() => {
         console.log('init db ok')
     })

@@ -18,7 +18,7 @@ const options = {
     }
 }
 
-function TypeState() {
+function TypeStat() {
     const data = {
         labels: ['前端', '后端', '数据分析', '产品', '设计'],
         datasets: [
@@ -54,4 +54,4 @@ function TypeState() {
     )
 }
 
-export default TypeState
+export default TypeStat

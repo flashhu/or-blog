@@ -1,0 +1,30 @@
+@import '@assets/style/variable.less';
+
+.fixbar {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+
+    .fixbar-item {
+        background: #fff;
+        color: #333;
+        border: 1px solid #bbbaba;
+        border-radius: 3px;
+        width: 30px;
+        height: 30px;
+        text-align: center;
+        line-height: 30px;
+        margin-bottom: 5px;
+
+        &:hover {
+            color: @primary-color;
+            border-color: @primary-color;
+        }
+    }
+
+    @media screen and (max-width: 680px){
+        .fixbar-item {
+            display: none;
+        }
+    }
+}

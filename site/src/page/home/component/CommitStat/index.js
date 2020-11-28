@@ -1,12 +1,12 @@
-import ActivityState from './ActivityState'
-import TypeState from './TypeState'
+import ActivityStat from './ActivityStat'
+import TypeStat from './TypeStat'
 import './index.less'
 
 function CommitState() {
     return (
         <div className="state-wrapper">
-            <ActivityState />
-            <TypeState />
+            <ActivityStat />
+            <TypeStat />
         </div>
     )
 }

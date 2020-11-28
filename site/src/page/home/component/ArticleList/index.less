@@ -1,0 +1,41 @@
+@import '@assets/style/variable.less';
+
+.article-list {
+    background-color: #fff;
+    padding: @default-padding;
+    margin-top: @default-margin-top;
+
+    & ul {
+        padding: 0;
+    }
+
+    .article-list-title {
+        font-family: @default-number-font;
+        font-weight: bold;
+        margin: @default-title-margin;
+    }
+
+    .article-item {
+        display: flex;
+        align-items: center;
+        position: relative;
+        list-style: none;
+        padding: 8px 0 8px 15px;
+
+        .item-time {
+            font-family: Georgia,Microsoft Yahei;
+            color: @normal-tip-color;
+        }
+
+        .item-title {
+            margin-left: 15px;
+        }
+
+        .item-type {
+            position: absolute;
+            right: 15px;
+            color: @normal-tip-color;
+            font-size: 12px;
+        }
+    }
+}

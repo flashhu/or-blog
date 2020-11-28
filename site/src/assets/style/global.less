@@ -1,3 +1,5 @@
+@import '@assets/style/variable.less';
+
 .hvr-underline {
     position: relative;
 
@@ -17,5 +19,14 @@
     &:hover:after {
         visibility: visible;
         transform: scaleX(1);
+    }
+}
+
+.hvr-curve-box {
+    position: relative;
+    transition: transform 200ms ease-in-out;
+
+    &:hover {
+        box-shadow: 0 4px 4px -4px rgba(0, 0, 0, 0.27), 0 4px 8px -4px rgba(0, 0, 0, 0.27);
     }
 }

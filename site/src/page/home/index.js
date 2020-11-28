@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useUserStore } from '@hooks/useStore';
-import { CommitState } from './component';
+import { CommitStat, ArticleList } from './component';
 
 function Home() {
   const userStore = useUserStore()
@@ -13,7 +13,8 @@ function Home() {
 
   return (
     <div className="home">
-      <CommitState />
+      <CommitStat />
+      <ArticleList />
     </div>
   )
 }
