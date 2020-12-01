@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import { useLocation } from 'react-router-dom'
 import Menu from '@component/Menu'
 import ErrorBoundary from '@component/ErrorBoundary'
 import { MAIN_MENU, OWNER_MENU } from '@constant/config'
 import Progress from '@component/Progress'
 import FixBar from '@component/FixBar'
-import { calculateScrollDistance } from '@util/scroll'
+import { calculateScrollDistance, handleScrollTop } from '@util/scroll'
 import './index.less'
 
 function Layout({children}) {
+  let location = useLocation()
   const [scrollWidth, setScrollWidth] = useState('0');
   const [showTop, setShowTop] = useState(false);
 
@@ -27,6 +29,11 @@ function Layout({children}) {
       setShowTop(false)
     }
   }, [scrollWidth])
+
+  useEffect(()=>{
+    setScrollWidth(0)
+    handleScrollTop()
+  }, [location])
 
   const handleScrollChange = () => {
     const scrollPosition = calculateScrollDistance()

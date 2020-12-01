@@ -1,18 +1,12 @@
 import { UpOutlined, EditOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import { easeout } from '@util/scroll'
+import { handleScrollTop } from '@util/scroll'
 import { useUserStore } from '@hooks/useStore';
 import './index.less'
 
 function FixBar({showTop}) {
     const userStore = useUserStore();
-
-    const handleScrollTop = () => {
-        easeout(document.documentElement.scrollTop, 0, 4, (value) => {
-            document.documentElement.scrollTop = value
-        })
-    }
 
     return (
         <div className="fixbar">

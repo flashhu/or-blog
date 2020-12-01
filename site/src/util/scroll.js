@@ -17,8 +17,8 @@ const getDocHeight = () => {
     );
 }
 
-// 缓动(返回顶部)
-export const easeout = (start = 0, end = 0, rate = 3, callback) => {
+// 缓动效果
+const easeout = (start = 0, end = 0, rate = 3, callback) => {
     // console.log(start, end);
     if (start === end || typeof start !== 'number') {
         return;
@@ -36,4 +36,11 @@ export const easeout = (start = 0, end = 0, rate = 3, callback) => {
     }
 
     step();
+}
+
+// 处理返回顶部
+export const handleScrollTop = () => {
+    easeout(document.documentElement.scrollTop, 0, 4, (value) => {
+        document.documentElement.scrollTop = value
+    })
 }
