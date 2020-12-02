@@ -41,12 +41,14 @@ function Layout({children}) {
   }
 
   return (
-    <div className="app">
+    <div className="app" mode={location.pathname === '/edit' ? 'edit' : ''}>
       <Progress scroll={`${scrollWidth}%`} />
       <FixBar showTop={showTop} />
-      <ErrorBoundary>
-        <Menu data={MAIN_MENU}/>
-      </ErrorBoundary>
+      {location.pathname !== '/edit' && 
+        <ErrorBoundary>
+          <Menu data={MAIN_MENU}/>
+        </ErrorBoundary>
+      }
       <ErrorBoundary>
         <div className="content">
           {children}

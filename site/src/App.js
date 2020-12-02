@@ -11,7 +11,7 @@ const Home = lazy(() => import('@page/home'));
 const Archive = lazy(() => import('@page/archive'));
 const Lab = lazy(() => import('@page/lab'));
 const About = lazy(() => import('@page/about'));
-const Create = lazy(() => import('@page/create'));
+const Edit = lazy(() => import('@page/edit'));
 const Data = lazy(() => import('@page/data'));
 const NotFound = lazy(() => import('@page/exception'));
 const Article = lazy(() => import('@page/article'));
@@ -41,7 +41,7 @@ function App() {
                 <Route path='/lab' exact component={Lab} />
                 <Route path='/about' exact component={About} />
                 <Route path='/article/:id' exact component={Article} />
-                <GuardedRoute path='/create' exact component={Create} auth={!!userStore.user} />
+                <GuardedRoute path='/edit' exact component={Edit} auth={!!userStore.user} />
                 <GuardedRoute path='/data' exact component={Data} auth={!!userStore.user} />
                 <Route component={NotFound} />
               </Switch>

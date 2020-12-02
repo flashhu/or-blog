@@ -1,5 +1,5 @@
 import { UpOutlined, EditOutlined } from '@ant-design/icons'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { handleScrollTop } from '@util/scroll'
 import { useUserStore } from '@hooks/useStore';
@@ -7,11 +7,24 @@ import './index.less'
 
 function FixBar({showTop}) {
     const userStore = useUserStore();
+    const location = useLocation();
 
     return (
         <div className="fixbar">
-            {userStore.user && <Link to='/create'><div className="fixbar-item"><EditOutlined /></div></Link>}
-            {showTop && <div className="fixbar-item" onClick={handleScrollTop}><UpOutlined /></div>}
+            {
+                userStore.user && location.pathname !== '/edit' &&
+                <Link to='/edit'>
+                    <div className="fixbar-item">
+                        <EditOutlined />
+                    </div>
+                </Link>
+            }
+            {
+                showTop && location.pathname !== '/edit' && 
+                <div className="fixbar-item" onClick={handleScrollTop}>
+                    <UpOutlined />
+                </div>
+            }
         </div>
     )
 }
