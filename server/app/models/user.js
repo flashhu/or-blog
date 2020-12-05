@@ -46,7 +46,8 @@ User.init({
             const pwd = bcrypt.hashSync(val, salt)
             this.setDataValue('password', pwd)
         }
-    }
+    },
+    role: Sequelize.INTEGER
 }, {
     sequelize,
     tableName: 'user'

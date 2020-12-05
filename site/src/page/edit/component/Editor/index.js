@@ -5,7 +5,7 @@ import 'react-markdown-editor-lite/lib/index.css';
 const mdParser = new MarkdownIt();
 
 function handleEditorChange({ html, text }) {
-    // console.log('handleEditorChange', html, text)
+    console.log('handleEditorChange', html, text)
 }
 
 function Editor() {

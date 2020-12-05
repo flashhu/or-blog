@@ -16,9 +16,10 @@ const router = new Router({
 router.post('/', async (ctx) => {
     const v = await new TokenValidator().validate(ctx)
     const user = await User.verifyAccount(v.get('body.name'), v.get('body.password'))
-    const token = generateToken(user.dataValues.id, Auth.ADMIN)
+    const token = generateToken(user.dataValues.id, user.dataValues.role === 1 ? Auth.ADMIN : Auth.USER)
     ctx.body = {
-        token
+        token,
+        role: user.dataValues.role
     }
 })
 

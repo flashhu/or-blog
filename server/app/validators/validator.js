@@ -22,6 +22,10 @@ class RegisterValidator extends LinValidator {
         this.name = [
             new Rule('isLength', '昵称长度需为4~32位', { min: 4, max: 32 })
         ]
+        this.role = [
+            new Rule('isLength', '角色类型不允许为空', { min: 1 }),
+            new Rule('matches', '角色类型不符', /^(1|0)$/)
+        ]
     }
 
     // 校验密码一致
@@ -63,7 +67,7 @@ class NotEmptyValidator extends LinValidator {
     constructor() {
         super()
         this.token = [
-            new Rule('isLength', '不允许为空', { min: 1 })
+            new Rule('isLength', 'Token不允许为空', { min: 1 })
         ]
     }
 }

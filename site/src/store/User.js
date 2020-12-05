@@ -15,7 +15,7 @@ class UserStore {
     if(data) {
       window.localStorage.setItem('token', data.token);
       runInAction(() => {
-        this.user = { name: params.name };
+        this.user = { name: params.name, role: data.role };
       })
       message.success('登录成功');
     }
