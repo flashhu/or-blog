@@ -10,3 +10,4 @@ export const API_USER_TOKEN_LOGIN = '/user/info';
 
 // article
 export const API_ARTICLE_SAVE = '/article/save';
+export const API_DRAFT_LIST = '/article/draft/list';

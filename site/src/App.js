@@ -41,8 +41,8 @@ function App() {
                 <Route path='/archive' exact component={Archive} />
                 <Route path='/lab' exact component={Lab} />
                 <Route path='/about' exact component={About} />
-                <Route path='/draft' exact component={Draft} />
                 <Route path='/article/:id' exact component={Article} />
+                <GuardedRoute path='/draft' exact component={Draft} auth={!!userStore.user} />
                 <GuardedRoute path='/edit/:id' exact component={Edit} auth={!!userStore.user} />
                 <GuardedRoute path='/data' exact component={Data} auth={!!userStore.user} />
                 <Route component={NotFound} />

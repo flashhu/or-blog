@@ -40,7 +40,14 @@ router.post('/save', new Auth(9).m, async (ctx) => {
             id: res.dataValues.id
         }
     }
-    
+})
+
+/**
+ * 获取草稿状态的文章列表
+ */
+router.get('/draft/list', new Auth(9).m, async (ctx) => {
+    const list = await Article.getDraftList()
+    ctx.body = list
 })
 
 module.exports = router

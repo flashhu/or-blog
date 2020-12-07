@@ -47,12 +47,12 @@ function Edit() {
     if(res.id) {
       history.push(`/edit/${res.id}`)
     }
-    // message.success('已保存至草稿箱');
+    message.success('已保存至草稿箱');
     setLoading(false);
     console.log('autosave', res);
   }
 
-  const debounceAutoSave = debounce(autoSave, 1000);
+  const debounceAutoSave = debounce(autoSave, 3000);
 
   useEffect(()=>{
     debounceAutoSave();
@@ -66,7 +66,7 @@ function Edit() {
         <Input ref={title} className="edit-title" placeholder="请输入文章标题..." />
         <div className="right-box">
           <div className="article-status">
-            {loading ? '保存中...':'已保存至'}
+            {loading ? '正保存到':'已保存至'}
             <Button className="btn-draft" type="default" onClick={goToDraft}>草稿箱</Button>
           </div>
           <Button className="btn-upload">一键上传</Button>

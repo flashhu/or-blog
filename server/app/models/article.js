@@ -21,6 +21,17 @@ class Article extends Model {
             throw new NotFound("文章不存在");
         }
     }
+
+    static async getDraftList() {
+        const list = await Article.findAll({
+            attributes: ['id', 'title', ['updated_at', 'time']],
+            where: {
+                status: 0
+            },
+            order: [['updated_at', 'DESC']]
+        })
+        return list
+    }
 }
 
 Article.init({
@@ -47,7 +58,10 @@ Article.init({
             this.setDataValue('secretKey', key)
         }
     },
-    status: Sequelize.INTEGER
+    status: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0
+    }
 }, {
     sequelize,
     tableName: 'article'
