@@ -26,6 +26,10 @@ function Edit() {
     history.goBack()
   }
 
+  const goToDraft = () => {
+    history.push('/draft')
+  }
+
   const handleEditorChange = ({ html, text }) => {
     setContentInHtml(html);
     setContentInText(text);
@@ -63,7 +67,7 @@ function Edit() {
         <div className="right-box">
           <div className="article-status">
             {loading ? '保存中...':'已保存至'}
-            <Button className="btn-draft" type="default">草稿箱</Button>
+            <Button className="btn-draft" type="default" onClick={goToDraft}>草稿箱</Button>
           </div>
           <Button className="btn-upload">一键上传</Button>
           <Button className="btn-submit" type="primary">发布文章</Button>

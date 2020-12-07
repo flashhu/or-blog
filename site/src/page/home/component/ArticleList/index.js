@@ -12,8 +12,8 @@ function ArticleList() {
     }
 
     return (
-        <div className="article-list">
-            <p className="article-list-title">文档列表</p>
+        <div className="article-list card-wrapper">
+            <p className="card-title">文档列表</p>
             <ul>
                 {
                     mock.map((item, index)=>
