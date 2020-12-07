@@ -13,6 +13,7 @@ function Layout({children}) {
   let location = useLocation()
   const [scrollWidth, setScrollWidth] = useState('0');
   const [showTop, setShowTop] = useState(false);
+  const mode = location.pathname.substr(0, 5) === '/edit' ? 'edit' : '';
 
   useEffect(() => {
     window.addEventListener('scroll', handleScrollChange)
@@ -41,10 +42,10 @@ function Layout({children}) {
   }
 
   return (
-    <div className="app" mode={location.pathname === '/edit' ? 'edit' : ''}>
+    <div className="app" mode={mode}>
       <Progress scroll={`${scrollWidth}%`} />
       <FixBar showTop={showTop} />
-      {location.pathname !== '/edit' && 
+      {!mode && 
         <ErrorBoundary>
           <Menu data={MAIN_MENU}/>
         </ErrorBoundary>

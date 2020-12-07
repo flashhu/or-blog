@@ -7,3 +7,6 @@ export const API_TOKEN_VERIFY = '/token/verify';
 
 // user
 export const API_USER_TOKEN_LOGIN = '/user/info';
+
+// article
+export const API_ARTICLE_SAVE = '/article/save';

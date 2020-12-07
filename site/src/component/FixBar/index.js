@@ -13,7 +13,7 @@ function FixBar({showTop}) {
         <div className="fixbar">
             {
                 userStore.user && location.pathname !== '/edit' &&
-                <Link to='/edit'>
+                <Link to='/edit/new'>
                     <div className="fixbar-item">
                         <EditOutlined />
                     </div>

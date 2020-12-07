@@ -23,8 +23,7 @@ class RegisterValidator extends LinValidator {
             new Rule('isLength', '昵称长度需为4~32位', { min: 4, max: 32 })
         ]
         this.role = [
-            new Rule('isLength', '角色类型不允许为空', { min: 1 }),
-            new Rule('matches', '角色类型不符', /^(1|0)$/)
+            new Rule('isInt', '角色类型不符', { min: 0, max: 1 })
         ]
     }
 
@@ -63,7 +62,7 @@ class TokenValidator extends LinValidator {
     }
 }
 
-class NotEmptyValidator extends LinValidator {
+class NotEmptyTokenValidator extends LinValidator {
     constructor() {
         super()
         this.token = [
@@ -72,9 +71,29 @@ class NotEmptyValidator extends LinValidator {
     }
 }
 
+class NotEmptyArticleValidator extends LinValidator {
+    constructor() {
+        super()
+        this.id = [
+            new Rule('isOptional'),
+            new Rule('isInt', '需要正整数', { min: 1 })
+        ]
+        this.title = [
+            new Rule('isLength', '标题长度不得超过255位字符', { min: 1, max: 255 })
+        ]
+        this.text = [
+            new Rule('isLength', '文章内容不得为空', { min: 1 })
+        ]
+        this.html = [
+            new Rule('isLength', '文章内容不得为空', { min: 1 })
+        ]
+    }
+}
+
 module.exports = {
     PositiveIntegerValidator,
     RegisterValidator,
     TokenValidator,
-    NotEmptyValidator,
+    NotEmptyTokenValidator,
+    NotEmptyArticleValidator
 }

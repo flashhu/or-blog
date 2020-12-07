@@ -10,4 +10,9 @@ export function useUserStore() {
   return userStore
 }
 
+export function useArticleStore() {
+  const { articleStore } = useStores();
+  return articleStore
+}
+
 export default useStores
