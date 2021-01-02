@@ -1,7 +1,8 @@
 const Router = require('koa-router')
 const { Article } = require('../../models/article')
-const { NotEmptyArticleValidator } = require('../../validators/validator')
+const { NotEmptyArticleValidator, PositiveIntegerValidator } = require('../../validators/validator')
 const { Auth } = require('../../../middlewares/auth')
+const { success } = require('../../lib/helper')
 
 const router = new Router({
     prefix: '/v1/article'
@@ -43,11 +44,30 @@ router.post('/save', new Auth(9).m, async (ctx) => {
 })
 
 /**
- * 获取草稿状态的文章列表
+ * 获取草稿状态的文章列表(管理员权限)
  */
 router.get('/draft/list', new Auth(9).m, async (ctx) => {
     const list = await Article.getDraftList()
     ctx.body = list
+})
+
+/**
+ * 获取某id对应的文章内容
+ * 密钥不明文显示，不传递
+ */
+router.get('/detail/:id', async (ctx) => {
+    const v = await new PositiveIntegerValidator().validate(ctx)
+    const detail = await Article.getDetail(v.get('path.id'))
+    detail.dataValues.secretKey = detail.dataValues.secretKey ? "****": ''
+    ctx.body = detail
+})
+
+/**
+ * 根据 id 删除草稿
+ */
+router.get('/delete/:id', async (ctx) => {
+    await Article.deleteArticle(ctx.params.id)
+    success('删除成功');
 })
 
 module.exports = router

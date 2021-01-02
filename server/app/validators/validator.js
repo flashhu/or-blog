@@ -5,7 +5,7 @@ class PositiveIntegerValidator extends LinValidator {
     constructor() {
         super()
         this.id = [
-            new Rule('isInt', '需要正整数', { min: 1 })
+            new Rule('isInt', '参数需要正整数', { min: 1 })
         ]
     }
 }
@@ -82,9 +82,11 @@ class NotEmptyArticleValidator extends LinValidator {
             new Rule('isLength', '标题长度不得超过255位字符', { min: 1, max: 255 })
         ]
         this.text = [
+            new Rule('isOptional'),
             new Rule('isLength', '文章内容不得为空', { min: 1 })
         ]
         this.html = [
+            new Rule('isOptional'),
             new Rule('isLength', '文章内容不得为空', { min: 1 })
         ]
     }

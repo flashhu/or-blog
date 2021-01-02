@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useEffect } from 'react';
 import { Switch, Route, HashRouter as Router } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import Login from '@page/Login';
@@ -28,6 +28,12 @@ const SuspenseWrapper = ({ children }) => {
 function App() {
   const userStore = useUserStore();
   console.log("isAutheticated: ", !!userStore.user)
+
+  useEffect(() => {
+    if (window.localStorage.token && !userStore.user) {
+      userStore.loginWithToken();
+    }
+  }, [])
 
   return (
     <Router>

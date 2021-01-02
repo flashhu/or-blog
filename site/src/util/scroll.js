@@ -4,7 +4,7 @@ export const calculateScrollDistance = () => {
     const docHeight = getDocHeight();
 
     const totalDocScrollLength = docHeight - winHeight;
-    const scrollPostion = Math.floor(scrollTop / totalDocScrollLength * 100)
+    const scrollPostion = Math.round(scrollTop / totalDocScrollLength * 100)
 
     return scrollPostion;
 }

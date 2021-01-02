@@ -22,6 +22,9 @@ class Article extends Model {
         }
     }
 
+    /**
+     * 获取草稿箱文章列表
+     */
     static async getDraftList() {
         const list = await Article.findAll({
             attributes: ['id', 'title', ['updated_at', 'time']],
@@ -31,6 +34,37 @@ class Article extends Model {
             order: [['updated_at', 'DESC']]
         })
         return list
+    }
+
+    /**
+     * 根据文章id获取详情
+     * @param {*} id 
+     */
+    static async getDetail(id) {
+        const detail = await Article.findByPk(id)
+        if(!detail) {
+            throw new NotFound("文章不存在");
+        }
+        return detail
+    }
+
+    /**
+     * 根据 id 删除文章
+     * @param {*} id 
+     */
+    static async deleteArticle(id) {
+        const detail = await Article.findByPk(id)
+        if (!detail) {
+            throw new NotFound("文章不存在");
+        }
+        await Article.destroy({
+            // force: false 软删除，插入时间戳标记
+            // force: true  物理删除
+            force: false,
+            where: {
+                id
+            }
+        })
     }
 }
 

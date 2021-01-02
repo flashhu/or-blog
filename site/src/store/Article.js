@@ -1,7 +1,12 @@
 import { makeAutoObservable, runInAction } from 'mobx'
 import { message } from 'antd'
 import { get, post } from '@util/request'
-import { API_ARTICLE_SAVE, API_DRAFT_LIST } from '@constant/urls'
+import { 
+    API_ARTICLE_SAVE, 
+    API_DRAFT_LIST, 
+    API_ARTICLE_DETAIL, 
+    API_ARTICLE_DELETE 
+} from '@constant/urls'
 
 class ArticleStore {
     constructor() {
@@ -14,6 +19,14 @@ class ArticleStore {
 
     async getDraftList() {
         return await get(API_DRAFT_LIST);
+    }
+
+    async getArticleDetail(id) {
+        return await get(`${API_ARTICLE_DETAIL}${id}`);
+    }
+
+    async deleteArticle(id) {
+        return await get(`${API_ARTICLE_DELETE}${id}`);
     }
 }
 

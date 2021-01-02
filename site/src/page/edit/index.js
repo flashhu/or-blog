@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { observer } from 'mobx-react'
 import { Input, Button, message } from 'antd'
 import { LeftOutlined } from '@ant-design/icons'
 import { useHistory, useParams } from "react-router-dom"
 import MarkdownIt from 'markdown-it'
-import MdEditor from 'react-markdown-editor-lite'
+import Editor from 'react-markdown-editor-lite'
 import { debounce } from 'lodash'
 import { useArticleStore } from '@hooks/useStore'
 import 'react-markdown-editor-lite/lib/index.css'
@@ -14,13 +14,33 @@ import './index.less'
 const mdParser = new MarkdownIt();
 
 function Edit() {
-  const title = useRef(null);
-  const [contentInHtml, setContentInHtml] = useState('');
-  const [contentInText, setContentInText] = useState('');
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(false);
   const articleStore = useArticleStore();
   const history = useHistory();
   const { id } = useParams();
+
+  useEffect(() => {
+    (async () => {
+      if (id !== 'new') {
+        const res = await articleStore.getArticleDetail(id);
+        console.log(res);
+        setTitle(res.title)
+        setContent({
+          html: res.html,
+          text: res.text
+        })
+      }
+    })();
+  }, [])
+
+  useEffect(() => {
+    if (content || title) {
+      debounceAutoSave();
+    }
+    return debounceAutoSave.cancel;
+  }, [content, title])
 
   const goBack = () => {
     history.goBack()
@@ -30,21 +50,28 @@ function Edit() {
     history.push('/draft')
   }
 
+  const handleTitleChange = (e) => {
+    setTitle(e.target.value || '');
+  }
+
   const handleEditorChange = ({ html, text }) => {
-    setContentInHtml(html);
-    setContentInText(text);
+    setContent({
+      html,
+      text
+    });
   }
 
   const autoSave = async () =>{
-    if(!contentInText) return
+    if (!(content || title)) return
     const data = {
-      title: title.current.state.value || '无标题',
-      text: contentInText,
-      html: contentInHtml
+      title: title || '无标题',
+      text: content ? content.text : '',
+      html: content ? content.html : ''
     }
     setLoading(true);
     const res = await articleStore.save(id, data);
-    if(res.id) {
+    if(res && res.id) {
+      // 首次编辑，获取到 id 后变路由
       history.push(`/edit/${res.id}`)
     }
     message.success('已保存至草稿箱');
@@ -54,16 +81,11 @@ function Edit() {
 
   const debounceAutoSave = debounce(autoSave, 3000);
 
-  useEffect(()=>{
-    debounceAutoSave();
-    return debounceAutoSave.cancel;
-  }, [contentInText])
-
   return (
     <div className="edit">
       <div className="top-bar">
         <LeftOutlined className="icon-back" onClick={goBack} />
-        <Input ref={title} className="edit-title" placeholder="请输入文章标题..." />
+        <Input value={title} onChange={handleTitleChange} className="edit-title" placeholder="请输入文章标题..." />
         <div className="right-box">
           <div className="article-status">
             {loading ? '正保存到':'已保存至'}
@@ -73,7 +95,8 @@ function Edit() {
           <Button className="btn-submit" type="primary">发布文章</Button>
         </div>
       </div>
-      <MdEditor
+      <Editor
+        value={content ? content.text : ''}
         style={{ minWidth: '800px', height: 'calc(100vh - 55px)' }}
         renderHTML={(text) => mdParser.render(text)}
         onChange={handleEditorChange}

@@ -14,6 +14,7 @@ const catchError = async (ctx, next) => {
             }
             ctx.status = error.code
         } else {
+            console.log(error);
             // 未知异常
             ctx.body = {
                 msg: '系统异常，请稍后重试！',
