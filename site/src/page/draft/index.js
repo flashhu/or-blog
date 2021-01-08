@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { Modal, message } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { useArticleStore } from '@hooks/useStore'
-import { formatDate } from '@util/date'
+import { formatUTCDate } from '@util/date'
 import './index.less'
 
 const { confirm } = Modal;
@@ -60,7 +60,7 @@ function Draft() {
                             删除
                         </span>
                     </div>
-                    <div>{formatDate(item.time)}</div>
+                    <div>{formatUTCDate(item.time)}</div>
                 </div>
             )}
         </div>

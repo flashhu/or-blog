@@ -2,6 +2,7 @@
   "name": "site",
   "version": "1.0.0",
   "description": "",
+  "proxy": "http://127.0.0.1:8080",
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --config build/webpack.common.js",
@@ -46,6 +47,7 @@
     "antd": "^4.8.5",
     "chart.js": "^2.9.4",
     "dayjs": "^1.9.7",
+    "highlight.js": "^10.5.0",
     "markdown-it": "^12.0.2",
     "mobx": "^6.0.2",
     "mobx-react": "^7.0.0",

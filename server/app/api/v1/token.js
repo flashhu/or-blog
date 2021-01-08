@@ -3,6 +3,7 @@ const { TokenValidator, NotEmptyTokenValidator } = require('../../validators/val
 const { User } = require('../../models/user')
 const { generateToken } = require('../../../core/util')
 const { Auth } = require('../../../middlewares/auth')
+const { getQiniuToken } = require('../../services/qiniu')
 
 const router = new Router({
     prefix: '/v1/token'
@@ -32,6 +33,16 @@ router.post('/verify', async (ctx) => {
     const result = Auth.verifyToken(v.get('body.token'))
     ctx.body = {
         is_valid: result
+    }
+})
+
+/**
+ * 获取七牛 token
+ */
+router.get('/qiniu', async (ctx) => {
+    const token = getQiniuToken()
+    ctx.body = {
+        token
     }
 })
 

@@ -4,14 +4,34 @@ import { Input, Button, message } from 'antd'
 import { LeftOutlined } from '@ant-design/icons'
 import { useHistory, useParams } from "react-router-dom"
 import MarkdownIt from 'markdown-it'
-import Editor from 'react-markdown-editor-lite'
+import MdEditor from 'react-markdown-editor-lite'
 import { debounce } from 'lodash'
+import hljs from 'highlight.js'
+import javascript from 'highlight.js/lib/languages/javascript'
 import { useArticleStore } from '@hooks/useStore'
+import { formateJSDate } from '@util/date'
 import 'react-markdown-editor-lite/lib/index.css'
+import 'highlight.js/styles/github.css'
 import './index.less'
 
-// markdown to html转换器
-const mdParser = new MarkdownIt();
+hljs.registerLanguage('javascript', javascript);
+
+// markdown to html转换器 (设置代码高亮)
+const mdParser = new MarkdownIt({
+  highlight: function (str, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return '<pre class="hljs"><code>' +
+          hljs.highlight(lang, str, true).value +
+          '</code></pre>';
+      } catch (__) { }
+    }
+    return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
+  }
+});
+
+const QINIU_SERVER = 'http://upload.qiniup.com/putb64/-1';
+const FILE_SERVER = 'http://file.flashhu.site/';
 
 function Edit() {
   const [title, setTitle] = useState("");
@@ -25,12 +45,14 @@ function Edit() {
     (async () => {
       if (id !== 'new') {
         const res = await articleStore.getArticleDetail(id);
-        console.log(res);
         setTitle(res.title)
         setContent({
           html: res.html,
           text: res.text
         })
+      }
+      if (!articleStore.qiniuToken) {
+        await articleStore.getQiniuToken();
       }
     })();
   }, [])
@@ -74,12 +96,42 @@ function Edit() {
       // 首次编辑，获取到 id 后变路由
       history.push(`/edit/${res.id}`)
     }
-    message.success('已保存至草稿箱');
+    if (res && !res.error_code) {
+      message.success('已保存至草稿箱');
+    }
     setLoading(false);
-    console.log('autosave', res);
   }
 
   const debounceAutoSave = debounce(autoSave, 3000);
+
+  const urlSafeBase64Encode = (str) => {
+    return btoa(encodeURI(str)).replace(/\//g, '_').replace(/\+/g, '-')
+  }
+
+  const handleImageUpload = (file) => {
+    return new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = data => {
+        const base64 = data.target.result.slice(data.target.result.indexOf(',') + 1);
+        const fileName = `image/${formateJSDate(new Date())}`;
+        const xhr = new XMLHttpRequest();
+        xhr.addEventListener("load", () => {
+          const res = JSON.parse(xhr.responseText)
+          resolve(`${FILE_SERVER}${res.key}`)
+          message.success('图片上传成功');
+        });
+        xhr.addEventListener("error", () => {
+          resolve('')
+          message.error('上传异常，请重试！');
+        });
+        xhr.open("POST", `${QINIU_SERVER}/key/${urlSafeBase64Encode(fileName)}`, true);
+        xhr.setRequestHeader("Content-Type", "application/octet-stream");
+        xhr.setRequestHeader("Authorization", `UpToken ${articleStore.qiniuToken}`);
+        xhr.send(base64);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
 
   return (
     <div className="edit">
@@ -95,11 +147,12 @@ function Edit() {
           <Button className="btn-submit" type="primary">发布文章</Button>
         </div>
       </div>
-      <Editor
+      <MdEditor
         value={content ? content.text : ''}
         style={{ minWidth: '800px', height: 'calc(100vh - 55px)' }}
         renderHTML={(text) => mdParser.render(text)}
         onChange={handleEditorChange}
+        onImageUpload={handleImageUpload}
       />
     </div>
   )
