@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { observer } from 'mobx-react'
 import { Input, Button, message } from 'antd'
 import { LeftOutlined } from '@ant-design/icons'
@@ -34,6 +34,8 @@ const QINIU_SERVER = 'http://upload.qiniup.com/putb64/-1';
 const FILE_SERVER = 'http://file.flashhu.site/';
 
 function Edit() {
+  const titleInput = useRef();
+  const contentEditor = useRef();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -44,25 +46,49 @@ function Edit() {
   useEffect(() => {
     (async () => {
       if (id !== 'new') {
+        // 再编辑，填入原有内容
         const res = await articleStore.getArticleDetail(id);
         setTitle(res.title)
         setContent({
           html: res.html,
           text: res.text
         })
+        debounceAutoSave.cancel();
       }
       if (!articleStore.qiniuToken) {
+        // 获取七牛上传 token
         await articleStore.getQiniuToken();
       }
     })();
+    // 设置监听， ctrl + s 自动保存
+    const editorDom = document.getElementById("md-editor");
+    editorDom.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      editorDom.removeEventListener("keydown", handleKeyDown);
+    }
   }, [])
 
   useEffect(() => {
     if (content || title) {
       debounceAutoSave();
     }
-    return debounceAutoSave.cancel;
+    return debounceAutoSave.cancel();
   }, [content, title])
+
+  const handleKeyDown = (e) => {
+    if (e.key.toLowerCase() === 's' && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+      e.preventDefault();
+      // 只捕获渲染时所用值，直接使用 state，传入的为初始值，故使用 ref 获取最新值
+      const currTitle = titleInput.current.state.value;
+      const currContent = {
+        html: contentEditor.current.state.html,
+        text: contentEditor.current.state.text
+      }
+      autoSave(currContent, currTitle);
+      debounceAutoSave.cancel();
+    }
+  }
 
   const goBack = () => {
     history.goBack()
@@ -83,7 +109,7 @@ function Edit() {
     });
   }
 
-  const autoSave = async () =>{
+  const autoSave = async (content, title) => {
     if (!(content || title)) return
     const data = {
       title: title || '无标题',
@@ -102,9 +128,10 @@ function Edit() {
     setLoading(false);
   }
 
-  const debounceAutoSave = debounce(autoSave, 3000);
+  const debounceAutoSave = debounce(() => autoSave(content, title), 3000);
 
   const urlSafeBase64Encode = (str) => {
+    // https://developer.qiniu.com/kodo/1276/data-format
     return btoa(encodeURI(str)).replace(/\//g, '_').replace(/\+/g, '-')
   }
 
@@ -137,7 +164,7 @@ function Edit() {
     <div className="edit">
       <div className="top-bar">
         <LeftOutlined className="icon-back" onClick={goBack} />
-        <Input value={title} onChange={handleTitleChange} className="edit-title" placeholder="请输入文章标题..." />
+        <Input ref={titleInput} value={title} onChange={handleTitleChange} className="edit-title" placeholder="请输入文章标题..." />
         <div className="right-box">
           <div className="article-status">
             {loading ? '正保存到':'已保存至'}
@@ -148,6 +175,8 @@ function Edit() {
         </div>
       </div>
       <MdEditor
+        id="md-editor"
+        ref={contentEditor}
         value={content ? content.text : ''}
         style={{ minWidth: '800px', height: 'calc(100vh - 55px)' }}
         renderHTML={(text) => mdParser.render(text)}
