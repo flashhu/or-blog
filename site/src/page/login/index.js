@@ -1,5 +1,6 @@
+import { useEffect } from 'react';
 import { observer } from 'mobx-react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useUserStore } from '@hooks/useStore';
@@ -7,21 +8,20 @@ import './index.less';
 
 function Login() {
   const userStore = useUserStore();
-  // const history = useHistory()
+  const history = useHistory();
 
   const onFinish = (values) => {
     userStore.login(values);
   };
 
-  // useEffect(() => {
-  //   if (userStore.user) {
-  //     history.goBack()
-  //   }
-  // }, [userStore.user, history])
+  useEffect(() => {
+    if (userStore.user) {
+      history.goBack();
+    }
+  }, [userStore.user, history]);
 
   return (
     <div className="login">
-      {userStore.user && <Redirect to="/" />}
       <div className="login-box">
         <Link to="/">
           <h1 className="login-title">一 本 笔 记</h1>

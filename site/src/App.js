@@ -1,6 +1,7 @@
 import React, { lazy, useEffect } from 'react';
-import { Switch, Route, HashRouter as Router } from 'react-router-dom';
+import { Switch, Route, Router } from 'react-router-dom';
 import { observer } from 'mobx-react';
+import history from './history';
 import Login from '@page/Login';
 import GuardedRoute from '@component/GuardedRoute';
 import Layout from '@component/Layout';
@@ -28,7 +29,7 @@ function App() {
   }, [userStore]);
 
   return (
-    <Router>
+    <Router history={history}>
       <Switch>
         <Route path="/login" component={Login} />
         <Route

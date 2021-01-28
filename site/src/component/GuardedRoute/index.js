@@ -7,7 +7,7 @@ const GuardedRoute = ({ component: Component, auth, ...rest }) => (
     render={(props) => (
       auth === true
         ? <Component {...props} />
-        : <Redirect to="/" />
+        : <Redirect to="/login" />
     )}
   />
 );
