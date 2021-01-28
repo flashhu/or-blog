@@ -1,7 +1,7 @@
-import userStore from './User'
-import articleStore from './Article'
+import userStore from './User';
+import articleStore from './Article';
 
 export default {
-    userStore,
-    articleStore
-}
+  userStore,
+  articleStore,
+};

@@ -5,7 +5,7 @@ import { ConfigProvider } from 'antd';
 import zhCN from 'antd/es/locale/zh_CN';
 import './index.less';
 import App from './App';
-import store from './store'
+import store from './store';
 
 ReactDOM.render(
   <Provider {...store}>
@@ -13,5 +13,5 @@ ReactDOM.render(
       <App />
     </ConfigProvider>
   </Provider>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );

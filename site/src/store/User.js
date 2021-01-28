@@ -1,22 +1,22 @@
-import { makeAutoObservable, runInAction } from 'mobx'
-import { message } from 'antd'
-import { get, post } from '@util/request'
-import { API_USER_LOGIN, API_USER_TOKEN_LOGIN } from '@constant/urls'
+import { makeAutoObservable, runInAction } from 'mobx';
+import { message } from 'antd';
+import { get, post } from '@util/request';
+import { API_USER_LOGIN, API_USER_TOKEN_LOGIN } from '@constant/urls';
 
 class UserStore {
   constructor() {
-    makeAutoObservable(this)
+    makeAutoObservable(this);
   }
 
   user = null
 
   async login(params) {
     const data = await post(API_USER_LOGIN, params);
-    if(data) {
+    if (data) {
       window.localStorage.setItem('token', data.token);
       runInAction(() => {
         this.user = { name: params.name, role: data.role };
-      })
+      });
       message.success('登录成功');
     }
   }
@@ -25,8 +25,8 @@ class UserStore {
     const data = await get(API_USER_TOKEN_LOGIN);
     if (data) {
       runInAction(() => {
-        this.user = data
-      })
+        this.user = data;
+      });
       message.success('登录成功');
     }
   }
@@ -38,4 +38,4 @@ class UserStore {
   }
 }
 
-export default new UserStore()
+export default new UserStore();

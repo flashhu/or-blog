@@ -1,4 +1,4 @@
-export const API_SERVER = 'http://localhost:8080/v1'
+export const API_SERVER = 'http://localhost:8080/v1';
 // export const API_SERVER = 'http://www.flashhu.site:8080/v1'
 
 // token

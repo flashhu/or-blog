@@ -1,35 +1,35 @@
 @import '@assets/style/variable.less';
 
 .draft-list {
-    .list-item {
-        position: relative;
-        padding: 24px 12px;
-        border-top: 1px solid #eee;
-    }
+  .list-item {
+    position: relative;
+    padding: 24px 12px;
+    border-top: 1px solid #eee;
+  }
 
-    .item-title {
-        font-size: 17px;
-        font-weight: bold;
-        color: #333;
+  .item-title {
+    font-size: 17px;
+    font-weight: bold;
+    color: #333;
         
-        &:hover {
-            color: @primary-color;
-        }
+    &:hover {
+      color: @primary-color;
+    }
+  }
+
+  .item-oper {
+    position: absolute;
+    right: 12px;
+    color: #eee;
+
+    .oper-preview {
+      cursor: pointer;
+      color: @primary-color;
     }
 
-    .item-oper {
-        position: absolute;
-        right: 12px;
-        color: #eee;
-
-        .oper-preview {
-            cursor: pointer;
-            color: @primary-color;
-        }
-
-        .oper-delete {
-            cursor: pointer;
-            color: #fa7355;
-        }
+    .oper-delete {
+      cursor: pointer;
+      color: #fa7355;
     }
+  }
 }

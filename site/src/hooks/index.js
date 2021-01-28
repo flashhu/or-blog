@@ -1,8 +1,6 @@
-import { useUserStore, useArticleStore } from './useStore'
-import { useRequest } from './useRequest'
+import { useUserStore, useArticleStore } from './useStore';
 
 export {
-    useUserStore, 
-    useArticleStore,
-    useRequest
-}
+  useUserStore,
+  useArticleStore,
+};

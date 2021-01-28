@@ -1,71 +1,71 @@
 @import '@assets/style/variable.less';
 
 .state-wrapper {
-    display: flex;
-    justify-content: space-between;
-    background-color: #fff;
-    padding: @default-padding;
-    margin-top: @default-margin-top;
+  display: flex;
+  justify-content: space-between;
+  background-color: #fff;
+  padding: @default-padding;
+  margin-top: @default-margin-top;
 
-    .state-title {
-        margin: @default-title-margin;
-        font-weight: bold;
+  .state-title {
+    margin: @default-title-margin;
+    font-weight: bold;
 
-        &:nth-last-child(1) {
-            font-weight: normal;
-        }
+    &:nth-last-child(1) {
+      font-weight: normal;
     }
+  }
 
-    .state-icon {
-        margin-right: 5px;
-        color: #00CC99;
+  .state-icon {
+    margin-right: 5px;
+    color: #0c9;
+  }
+
+  .state-type {
+    margin-left: 20px;
+  }
+
+  .type-pie {
+    position: relative;
+    top: -12px;
+    width: 250px;
+    height: 200px;
+  }
+
+  .state-item {
+    position: relative;
+    margin: 10px 0;
+    list-style: none;
+    // white-space: nowrap;
+    // overflow: hidden;
+    // text-overflow: ellipsis;
+
+    a {
+      color: @normal-text-color;
     }
+  }
 
-    .state-type {
-        margin-left: 20px;
+  .state-activity ul {
+    margin: 0;
+    max-width: 390px;
+    padding-left: 18px;
+  }
+
+  @media screen and (max-width: 680px) {
+    & {
+      flex-direction: column;
     }
 
     .type-pie {
-        position: relative;
-        top: -12px;
-        width: 250px;
-        height: 200px;
+      margin: 0 auto;
     }
 
-    .state-item {
-        position: relative;
-        margin: 10px 0;
-        list-style: none;
-        // white-space: nowrap;
-        // overflow: hidden;
-        // text-overflow: ellipsis;
-
-        a {
-            color: @normal-text-color;
-        }
+    .state-type {
+      margin-left: 0;
     }
 
-    .state-activity ul {
-        margin: 0;
-        max-width: 390px;
-        padding-left: 18px;
+    .state-title:nth-last-child(1) {
+      margin-bottom: 0;
     }
-
-    @media screen and (max-width: 680px){
-        & {
-            flex-direction: column;
-        }
-
-        .type-pie {
-            margin: 0 auto;
-        }
-
-        .state-type {
-            margin-left: 0;
-        }
-
-        .state-title:nth-last-child(1) {
-            margin-bottom: 0;
-        }
-    }
+  }
 }

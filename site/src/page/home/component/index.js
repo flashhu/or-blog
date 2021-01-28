@@ -1,7 +1,7 @@
-import CommitStat from './CommitStat'
-import ArticleList from './ArticleList'
+import CommitStat from './CommitStat';
+import ArticleList from './ArticleList';
 
 export {
-    CommitStat,
-    ArticleList
-}
+  CommitStat,
+  ArticleList,
+};

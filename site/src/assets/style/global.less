@@ -1,44 +1,44 @@
 @import '@assets/style/variable.less';
 
 .hvr-underline {
-    position: relative;
+  position: relative;
 
-    &:after {
-        content: '';
-        position: absolute;
-        width: 100%;
-        height: 1px;
-        bottom: -2px;
-        left: 0;
-        background-color: #333333;
-        visibility: hidden;
-        transform: scaleX(0);
-        transition: transform 200ms ease-in-out;
-    }
+  &:after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    bottom: -2px;
+    left: 0;
+    background-color: #333;
+    visibility: hidden;
+    transform: scaleX(0);
+    transition: transform 200ms ease-in-out;
+  }
 
-    &:hover:after {
-        visibility: visible;
-        transform: scaleX(1);
-    }
+  &:hover:after {
+    visibility: visible;
+    transform: scaleX(1);
+  }
 }
 
 .hvr-curve-box {
-    position: relative;
-    transition: transform 200ms ease-in-out;
+  position: relative;
+  transition: transform 200ms ease-in-out;
 
-    &:hover {
-        box-shadow: 0 4px 4px -4px rgba(0, 0, 0, 0.27), 0 4px 8px -4px rgba(0, 0, 0, 0.27);
-    }
+  &:hover {
+    box-shadow: 0 4px 4px -4px rgba(0, 0, 0, 0.27), 0 4px 8px -4px rgba(0, 0, 0, 0.27);
+  }
 }
 
 .card-wrapper {
-    background-color: #fff;
-    padding: @default-padding;
-    margin-top: @default-margin-top;
+  background-color: #fff;
+  padding: @default-padding;
+  margin-top: @default-margin-top;
 }
 
 .card-title {
-    font-family: @default-number-font;
-    font-weight: bold;
-    margin: @default-title-margin;
+  font-family: @default-number-font;
+  font-weight: bold;
+  margin: @default-title-margin;
 }

@@ -6,7 +6,7 @@ function Home() {
       <CommitStat />
       <ArticleList />
     </div>
-  )
+  );
 }
 
 export default Home;
