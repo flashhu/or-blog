@@ -38,7 +38,6 @@ const findMembers = function (instance, {
 }
 
 const generateToken = function(uid, scope){
-    console.log(scope)
     const secretKey = global.config.security.secretKey
     const expiresIn = global.config.security.expiresIn
     // 生成令牌

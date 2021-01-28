@@ -10,9 +10,17 @@ class Article extends Model {
      * @param {*} data {title, html, text}
      */
     static async updateContent(id, data) {
-        const article = await Article.findByPk(id);
-        if(article) {
+        const article = await Article.findByPk(id)
+        if (article) {
+            // 多作者
+            let uidArray = article.uid.split('|')
+            let uid = article.uid || data.uid
+            if(uidArray.indexOf('' + data.uid) === -1) {
+                uidArray.push(data.uid)
+                uid = uidArray.join('|')
+            }
             await article.update({
+                uid: uid,
                 title: data.title,
                 text: data.text,
                 html: data.html
@@ -74,14 +82,9 @@ Article.init({
         primaryKey: true,
         autoIncrement: true
     },
-    title: Sequelize.STRING(255),
+    uid: Sequelize.STRING(50),
+    title: Sequelize.STRING(100),
     text: Sequelize.TEXT,
-    html: Sequelize.TEXT,
-    tag: Sequelize.STRING(100),
-    // 类别，用于构建文件树
-    type: Sequelize.STRING(100),
-    // 文件位置
-    path: Sequelize.STRING(100),
     // 加密口令
     secretKey: {
         type: Sequelize.STRING,

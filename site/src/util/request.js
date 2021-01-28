@@ -4,6 +4,7 @@ import { API_SERVER } from '@constant/urls';
 import { encode } from '@util/token';
 
 const errorHandler = (error) => {
+  console.log('ERROR', error);
   const { data = {} } = error;
   let msg = '网络错误';
   if (data.msg instanceof Array && data.msg.length > 0) {

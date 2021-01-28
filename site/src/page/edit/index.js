@@ -50,10 +50,10 @@ function Edit() {
       if (id !== 'new') {
         // 再编辑，填入原有内容
         const res = await articleStore.getArticleDetail(id);
-        setTitle(res.title);
+        setTitle(res.data.title);
         setContent({
-          html: res.html,
-          text: res.text,
+          html: res.data.html,
+          text: res.data.text,
         });
         debounceAutoSave.cancel();
       }
@@ -121,9 +121,9 @@ function Edit() {
     };
     setLoading(true);
     const res = await articleStore.save(id, data);
-    if (res && res.id) {
+    if (res && !res.error_code && res.data.id) {
       // 首次编辑，获取到 id 后变路由
-      history.push(`/edit/${res.id}`);
+      history.push(`/edit/${res.data.id}`);
     }
     if (res && !res.error_code) {
       message.success('已保存至草稿箱');

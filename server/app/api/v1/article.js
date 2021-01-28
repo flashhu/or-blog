@@ -12,34 +12,28 @@ const router = new Router({
  * 自动保存
  * @param {number} id 文章id，可选，未传则新增
  * @param {string} title
- * @param {string} html
  * @param {string} text
  */
 router.post('/save', new Auth(9).m, async (ctx) => {
     const v = await new NotEmptyArticleValidator().validate(ctx)
+    const data = {
+        uid: ctx.auth.uid,
+        title: v.get('body.title'),
+        text: v.get('body.text')
+    }
     if(v.get('body.id')) {
         // 再编辑
-        const article = {
-            title: v.get('body.title'),
-            text: v.get('body.text'),
-            html: v.get('body.html')
-        }
-        await Article.updateContent(v.get('body.id'), article);
-        ctx.body = {
-            success: 1
-        }
+        await Article.updateContent(v.get('body.id'), data);
+        success(null, {
+            update_time: new Date()
+        })
     } else {
         // 新建
-        const article = {
-            title: v.get('body.title'),
-            text: v.get('body.text'),
-            html: v.get('body.html')
-        }
-        const res = await Article.create(article)
-        ctx.body = {
-            success: 1,
-            id: res.dataValues.id
-        }
+        const res = await Article.create(data)
+        success({
+            id: res.dataValues.id,
+            update_time: new Date()
+        })
     }
 })
 
@@ -48,7 +42,7 @@ router.post('/save', new Auth(9).m, async (ctx) => {
  */
 router.get('/draft/list', new Auth(9).m, async (ctx) => {
     const list = await Article.getDraftList()
-    ctx.body = list
+    success(list)
 })
 
 /**
@@ -59,7 +53,7 @@ router.get('/detail/:id', async (ctx) => {
     const v = await new PositiveIntegerValidator().validate(ctx)
     const detail = await Article.getDetail(v.get('path.id'))
     detail.dataValues.secretKey = detail.dataValues.secretKey ? "****": ''
-    ctx.body = detail
+    success(detail)
 })
 
 /**
@@ -67,7 +61,7 @@ router.get('/detail/:id', async (ctx) => {
  */
 router.get('/delete/:id', async (ctx) => {
     await Article.deleteArticle(ctx.params.id)
-    success('删除成功');
+    success(null, '删除成功');
 })
 
 module.exports = router

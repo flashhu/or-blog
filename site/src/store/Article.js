@@ -13,7 +13,7 @@ class ArticleStore {
     makeAutoObservable(this);
   }
 
-    qiniuToken = ''
+    qiniuToken = '';
 
     async save(id, params) {
       return await post(API_ARTICLE_SAVE, id === 'new' ? params : { id, ...params });
@@ -33,9 +33,9 @@ class ArticleStore {
 
     async getQiniuToken() {
       const data = await get(API_QINIU_TOKEN);
-      if (data) {
+      if (data && !data.error_code) {
         runInAction(() => {
-          this.qiniuToken = data.token;
+          this.qiniuToken = data.data.token;
         });
       }
     }

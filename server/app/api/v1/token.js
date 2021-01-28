@@ -4,13 +4,15 @@ const { User } = require('../../models/user')
 const { generateToken } = require('../../../core/util')
 const { Auth } = require('../../../middlewares/auth')
 const { getQiniuToken } = require('../../services/qiniu')
+const { success } = require('../../lib/helper')
 
 const router = new Router({
     prefix: '/v1/token'
 })
 
 /**
- * 用户登录（未开放注册接口，统一设为管理员权限）
+ * 用户登录（不开放注册接口）
+ * 上线时，此接口需注释
  * @param {string} name 昵称
  * @param {string} password 密码
  */
@@ -18,10 +20,10 @@ router.post('/', async (ctx) => {
     const v = await new TokenValidator().validate(ctx)
     const user = await User.verifyAccount(v.get('body.name'), v.get('body.password'))
     const token = generateToken(user.dataValues.id, user.dataValues.role === 1 ? Auth.ADMIN : Auth.USER)
-    ctx.body = {
+    success({
         token,
         role: user.dataValues.role
-    }
+    }, '登录成功')
 })
 
 /**
@@ -31,9 +33,9 @@ router.post('/', async (ctx) => {
 router.post('/verify', async (ctx) => {
     const v = await new NotEmptyTokenValidator().validate(ctx)
     const result = Auth.verifyToken(v.get('body.token'))
-    ctx.body = {
+    success({
         is_valid: result
-    }
+    })
 })
 
 /**
@@ -41,9 +43,9 @@ router.post('/verify', async (ctx) => {
  */
 router.get('/qiniu', async (ctx) => {
     const token = getQiniuToken()
-    ctx.body = {
+    success({
         token
-    }
+    })
 })
 
 module.exports = router

@@ -12,20 +12,21 @@ class UserStore {
 
   async login(params) {
     const data = await post(API_USER_LOGIN, params);
-    if (data) {
-      window.localStorage.setItem('token', data.token);
+    if (data && !data.error_code) {
+      window.localStorage.setItem('token', data.data.token);
       runInAction(() => {
-        this.user = { name: params.name, role: data.role };
+        this.user = { name: params.name, role: data.data.role };
       });
+      console.log({ name: params.name, role: data.data.role });
       message.success('登录成功');
     }
   }
 
   async loginWithToken() {
     const data = await get(API_USER_TOKEN_LOGIN);
-    if (data) {
+    if (data && !data.error_code) {
       runInAction(() => {
-        this.user = data;
+        this.user = data.data;
       });
       message.success('登录成功');
     }

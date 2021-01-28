@@ -33,8 +33,8 @@ function Draft() {
   useEffect(() => {
     (async () => {
       const res = await articleStore.getDraftList();
-      if (res) {
-        setDraftList(res);
+      if (res && !res.error_code) {
+        setDraftList(res.data);
       }
     })();
   }, [articleStore]);

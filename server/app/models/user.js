@@ -47,6 +47,7 @@ User.init({
             this.setDataValue('password', pwd)
         }
     },
+    email: Sequelize.STRING(50),
     role: Sequelize.INTEGER
 }, {
     sequelize,

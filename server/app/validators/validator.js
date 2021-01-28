@@ -22,6 +22,9 @@ class RegisterValidator extends LinValidator {
         this.name = [
             new Rule('isLength', '昵称长度需为4~32位', { min: 4, max: 32 })
         ]
+        this.email = [
+            new Rule('isEmail', '不符合Email规范')
+        ]
         this.role = [
             new Rule('isInt', '角色类型不符', { min: 0, max: 1 })
         ]
@@ -79,13 +82,9 @@ class NotEmptyArticleValidator extends LinValidator {
             new Rule('isInt', '需要正整数', { min: 1 })
         ]
         this.title = [
-            new Rule('isLength', '标题长度不得超过255位字符', { min: 1, max: 255 })
+            new Rule('isLength', '标题长度不得超过 100 位字符', { min: 1, max: 100 })
         ]
         this.text = [
-            new Rule('isOptional'),
-            new Rule('isLength', '文章内容不得为空', { min: 1 })
-        ]
-        this.html = [
             new Rule('isOptional'),
             new Rule('isLength', '文章内容不得为空', { min: 1 })
         ]

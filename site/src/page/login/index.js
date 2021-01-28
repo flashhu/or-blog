@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { observer } from 'mobx-react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, Redirect } from 'react-router-dom';
 import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useUserStore } from '@hooks/useStore';
@@ -15,6 +15,7 @@ function Login() {
   };
 
   useEffect(() => {
+    // 如仅写这句，在登录页停留多次后，无法跳转到首页
     if (userStore.user) {
       history.goBack();
     }
@@ -22,6 +23,7 @@ function Login() {
 
   return (
     <div className="login">
+      { userStore.user && <Redirect to='/' /> }
       <div className="login-box">
         <Link to="/">
           <h1 className="login-title">一 本 笔 记</h1>
