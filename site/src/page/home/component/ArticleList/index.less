@@ -1,31 +1,30 @@
 @import '@assets/style/variable.less';
 
 .article-list {
-  & ul {
-    padding: 0;
+    & ul {
+        padding: 0;
+    }
+    .article-item {
+        display: flex;
+        align-items: center;
+        position: relative;
+        list-style: none;
+        padding: 10px 0 10px 15px;
+        border-bottom: 1px solid #999999;
+        .item-time {
+            font-family: Georgia,Microsoft Yahei;
+            color: @normal-tip-color;
+        }
+        .item-title {
+            margin-left: 20px;
+        }
+
+        .item-type {
+            position: absolute;
+            right: 10px;
+            bottom: 40px;
+            color: @normal-tip-color;
+            font-size: 12px;
+        }
+    }
   }
-
-  .article-item {
-    display: flex;
-    align-items: center;
-    position: relative;
-    list-style: none;
-    padding: 8px 0 8px 15px;
-
-    .item-time {
-      font-family: Georgia, Microsoft Yahei;
-      color: @normal-tip-color;
-    }
-
-    .item-title {
-      margin-left: 15px;
-    }
-
-    .item-type {
-      position: absolute;
-      right: 15px;
-      color: @normal-tip-color;
-      font-size: 12px;
-    }
-  }
-}

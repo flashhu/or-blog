@@ -17,7 +17,7 @@ const commonConfig = {
   mode: isEnvProduction ? 'production' : 'development',
   entry: resolve('../src/index.js'),
   output: {
-    filename: 'static/js/[name].[contenthash:8].js',
+    filename: this.mode === 'production' ? 'js/[name].[contenthash:8].js' : 'js/[name].[hash:8].js',
     path: resolve('../dist')
   },
   module: {
@@ -118,7 +118,8 @@ const commonConfig = {
       "@util": resolve('../src/util'),
       "@hooks": resolve('../src/hooks'),
       "@constant": resolve('../src/constant'),
-      "@assets": resolve('../src/assets')
+      "@assets": resolve('../src/assets'),
+      "@store": resolve('../src/store')
     },
     modules: [resolve('../node_modules')]
   }

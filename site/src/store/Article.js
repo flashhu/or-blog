@@ -6,6 +6,7 @@ import {
   API_ARTICLE_DETAIL,
   API_ARTICLE_DELETE,
   API_QINIU_TOKEN,
+  API_ARTICLE_LIST
 } from '@constant/urls';
 
 class ArticleStore {
@@ -21,6 +22,10 @@ class ArticleStore {
 
     async getDraftList() {
       return await get(API_DRAFT_LIST);
+    }
+
+    async getArticleList(uid) {
+      return await get(`${API_ARTICLE_LIST}${uid}`);
     }
 
     async getArticleDetail(id) {

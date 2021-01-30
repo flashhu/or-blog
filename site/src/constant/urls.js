@@ -14,3 +14,4 @@ export const API_ARTICLE_SAVE = '/article/save';
 export const API_ARTICLE_DELETE = '/article/delete/';
 export const API_ARTICLE_DETAIL = '/article/detail/';
 export const API_DRAFT_LIST = '/article/draft/list';
+export const API_ARTICLE_LIST = '/article/list/';

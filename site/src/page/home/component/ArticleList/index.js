@@ -1,28 +1,63 @@
 import './index.less';
+import { Link, useParams } from 'react-router-dom';
+import { Tag, Card } from 'antd';
+import { useState, useEffect } from 'react'
+import { useArticleStore } from '@hooks/useStore'
+
+import {
+  SmileOutlined,
+} from '@ant-design/icons';
+
+const { Meta } = Card;
 
 function ArticleList() {
   const mock = [];
-
+  let count = 1;
+  const { uid } = useParams()
+  const articleStore = useArticleStore()
+  const [aritrcleList, setAritrcleList] = useState({});
+  useEffect(() => {
+    (async () => {
+      const res = await articleStore.getArticleList(uid);
+      console.log(res);
+      if (res) {
+        setAritrcleList(res.data);
+      }
+    })();
+  });
+  console.log(aritrcleList);
   for (let i = 0; i < 30; i++) {
     mock.push({
+      id: count++,
       title: '这是一个文章标题占位测试',
       date: '2020-11-27',
       type: '前端',
     });
   }
-
   return (
     <div className="article-list card-wrapper">
       <p className="card-title">文档列表</p>
       <ul>
         {
-                    mock.map((item, index) =>
-                      (<li className="article-item" key={`${index }3`}>
-                        <span className="item-time">{item.date}</span>
-                        <span className="hvr-underline item-title">{item.title}</span>
-                        <span className="item-type">{item.type}</span>
-                      </li>))
-                }
+        mock.map((item) =>
+          (<Card
+            hoverable
+            className="article-item"
+            key={item.id}
+          >
+            <Link to={`/article/${ item.id}`}>
+              {/* <span className="item-time" >{item.date}</span>
+            <span className="hvr-underline item-title">{item.title}</span> */}
+              <Meta title={item.title} description={item.date} />
+              <Tag
+                icon={<SmileOutlined />}
+                className="item-type"
+                color="magenta"
+              >{item.type}
+              </Tag>
+            </Link>
+           </Card>))
+        }
       </ul>
     </div>
   );

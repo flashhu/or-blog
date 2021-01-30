@@ -7,7 +7,8 @@
       "@util/*": ["src/util/*"],
       "@hooks/*": ["src/hooks/*"],
       "@constant/*": ["src/constant/*"],
-      "@assets/*": ["src/assets/*" ]
+      "@assets/*": ["src/assets/*" ],
+      "@store/*": ["src/store/*"]
     }
   },
   "exclude": [

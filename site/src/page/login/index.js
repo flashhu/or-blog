@@ -23,7 +23,7 @@ function Login() {
 
   return (
     <div className="login">
-      { userStore.user && <Redirect to='/' /> }
+      { userStore.user && <Redirect to="/" /> }
       <div className="login-box">
         <Link to="/">
           <h1 className="login-title">一 本 笔 记</h1>
