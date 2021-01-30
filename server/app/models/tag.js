@@ -14,7 +14,7 @@ Tag.init({
     name: Sequelize.STRING(50)
 }, {
     sequelize,
-    tableName: 'bm_tag'
+    tableName: 'tag'
 })
 
 module.exports = {

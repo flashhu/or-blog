@@ -18,7 +18,7 @@ Type.init({
     name: Sequelize.STRING(50)
 }, {
     sequelize,
-    tableName: 'bm_type'
+    tableName: 'type'
 })
 
 module.exports = {

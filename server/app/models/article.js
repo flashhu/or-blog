@@ -12,15 +12,8 @@ class Article extends Model {
     static async updateContent(id, data) {
         const article = await Article.findByPk(id)
         if (article) {
-            // 多作者
-            let uidArray = article.uid.split('|')
-            let uid = article.uid || data.uid
-            if(uidArray.indexOf('' + data.uid) === -1) {
-                uidArray.push(data.uid)
-                uid = uidArray.join('|')
-            }
             await article.update({
-                uid: uid,
+                uid: data.uid,
                 title: data.title,
                 text: data.text,
                 html: data.html
@@ -82,7 +75,10 @@ Article.init({
         primaryKey: true,
         autoIncrement: true
     },
-    uid: Sequelize.STRING(50),
+    // 文章只有一作者
+    uid: Sequelize.INTEGER,
+    // 所属文章类别（组织文档树）
+    tid: Sequelize.INTEGER,
     title: Sequelize.STRING(100),
     text: Sequelize.TEXT,
     // 加密口令
