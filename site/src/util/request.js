@@ -4,7 +4,6 @@ import { API_SERVER } from '@constant/urls';
 import { encode } from '@util/token';
 
 const errorHandler = (error) => {
-  console.log('ERROR', error);
   const { data = {} } = error;
   let msg = '网络错误';
   if (data.msg instanceof Array && data.msg.length > 0) {
@@ -13,7 +12,7 @@ const errorHandler = (error) => {
   if (typeof (data.msg) === 'string') {
     msg = data.msg;
   }
-  if (!data.error_code || (data.error_code !== 1001 && data.error_code !== 1002)) {
+  if (data.error_code !== 1001 && data.error_code !== 1002) {
     // 非Token相关问题
     message.error(msg);
   }
@@ -29,21 +28,29 @@ const request = extend({
   errorHandler, // 错误处理
 });
 
-export const get = (url = '', params = {}) => {
-  return request(url, {
-    method: 'get',
-    params,
-  }).then((response) => {
-    return response;
-  }).catch((error) => {
-    errorHandler(error);
-  });
+/**
+ * 检查响应结果
+ */
+export const checkResponse = (res) => {
+  return res && !res.error_code;
 };
 
-export const post = (url = '', params = {}) => {
+/**
+ * 七牛云所需格式化
+ */
+export const urlSafeBase64Encode = (str) => {
+  // https://developer.qiniu.com/kodo/1276/data-format
+  return btoa(encodeURI(str)).replace(/\//g, '_').replace(/\+/g, '-');
+};
+
+export default (url, method, params = null) => {
+  // 'data' 作为请求主体被发送的数据
+  // 适用于这些请求方法 'PUT', 'POST', 和 'PATCH'
+  const dataEnable = ['PUT', 'POST', 'PATCH'];
+  const requestProps = dataEnable.indexOf(method) !== -1 ? { data: params } : { params };
   return request(url, {
-    method: 'post',
-    data: params,
+    method,
+    ...requestProps,
   }).then((response) => {
     return response;
   }).catch((error) => {

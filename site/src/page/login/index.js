@@ -1,29 +1,29 @@
-import { useEffect } from 'react';
 import { observer } from 'mobx-react';
-import { Link, useHistory, Redirect } from 'react-router-dom';
-import { Form, Input, Button } from 'antd';
+import { Link, Redirect } from 'react-router-dom';
+import { Form, Input, Button, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useUserStore } from '@hooks/useStore';
+import { login } from '@api/user';
+import { checkResponse } from '@util/request';
 import './index.less';
 
 function Login() {
   const userStore = useUserStore();
-  const history = useHistory();
+  // const history = useHistory();
 
-  const onFinish = (values) => {
-    userStore.login(values);
-  };
-
-  useEffect(() => {
-    // 如仅写这句，在登录页停留多次后，无法跳转到首页
-    if (userStore.user) {
-      history.goBack();
+  const onFinish = async (values) => {
+    const res = await login(values);
+    if (checkResponse(res)) {
+      window.localStorage.setItem('token', res.data.token);
+      userStore.updateUserInfo({ name: values.name, role: res.data.role });
+      message.success('登录成功');
+      // history.goBack();
     }
-  }, [userStore.user, history]);
+  };
 
   return (
     <div className="login">
-      { userStore.user && <Redirect to='/' /> }
+      { userStore.user && <Redirect to="/" /> }
       <div className="login-box">
         <Link to="/">
           <h1 className="login-title">一 本 笔 记</h1>

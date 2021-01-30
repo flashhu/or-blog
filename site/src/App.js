@@ -7,6 +7,8 @@ import GuardedRoute from '@component/GuardedRoute';
 import Layout from '@component/Layout';
 import SuspenseWrapper from '@component/SuspenseWrapper';
 import { useUserStore } from '@hooks/useStore';
+import { loginWithToken } from '@api/user';
+import { checkResponse } from '@util/request';
 import '@assets/style/global.less';
 
 const Home = lazy(() => import('@page/home'));
@@ -23,9 +25,14 @@ function App() {
   const userStore = useUserStore();
 
   useEffect(() => {
-    if (window.localStorage.token && !userStore.user) {
-      userStore.loginWithToken();
-    }
+    (async () => {
+      if (window.localStorage.token && !userStore.user) {
+        const res = await loginWithToken();
+        if (checkResponse(res)) {
+          userStore.updateUserInfo(res.data);
+        }
+      }
+    })();
   }, [userStore]);
 
   return (
