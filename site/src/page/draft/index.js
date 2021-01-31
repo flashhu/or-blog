@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Modal, message } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { formatUTCDate } from '@util/date';
@@ -29,6 +29,7 @@ function showDeleteConfirm(title, id, handleDelete) {
 
 function Draft() {
   const [draftList, setDraftList] = useState([]);
+  const history = useHistory();
 
   useEffect(() => {
     initDraftList();
@@ -58,7 +59,7 @@ function Draft() {
         (<div className="list-item" key={item.id}>
           <Link className="item-title" to={`/edit/${item.id}`}>{item.title}</Link>
           <div className="item-oper">
-            <span className="oper-preview">预览 </span> |
+            <span className="oper-preview" onClick={() => { history.push(`/article/${item.id}`); }}>预览 </span> |
             <span
               className="oper-delete"
               onClick={() => showDeleteConfirm(item.title, item.id, handleDelete)}

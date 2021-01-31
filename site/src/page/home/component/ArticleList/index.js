@@ -1,17 +1,16 @@
-import './index.less';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Tag, Card } from 'antd';
-import { useState, useEffect } from 'react'
-import { getArticleListAll } from '../../../../api/article'
-import './formatData'
-import {
-  SmileOutlined,
-} from '@ant-design/icons';
-
+import { useState, useEffect } from 'react';
+import { getArticleListAll } from '../../../../api/article';
+import { formatUTCDate } from '@util/date';
+import { SmileOutlined } from '@ant-design/icons';
+import './index.less';
 
 const { Meta } = Card;
+
 function ArticleList() {
   const [aritrcleList, setAritrcleList] = useState([]);
+
   useEffect(() => {
     (async () => {
       const res = await getArticleListAll();
@@ -20,33 +19,35 @@ function ArticleList() {
       }
     })();
   }, []);
-  console.log(aritrcleList);
+
   return (
-    <div className="article-list card-wrapper">
+    <div className="article-list">
       <p className="card-title">文档列表</p>
-      <ul>
-        {
+      {
         aritrcleList.map((item) =>
           (<Card
             hoverable
             className="article-item"
             key={item.id}
-            cover={<img src={`https://picsum.photos/id/${item.id}/60`} />}
+            cover={
+              <img
+                className="item-cover"
+                src={`https://picsum.photos/400/200?random=${Math.floor(Math.random() * 1000)}`}
+              />
+            }
           >
             <Link to={`/article/${ item.id}`}>
-              {/* <span className="item-time" >{item.date}</span>
-            <span className="hvr-underline item-title">{item.title}</span> */}
-              <Meta title={item.title} description={formatDate(item.time)} />
+              <Meta title={item.title} description={formatUTCDate(item.time)} />
               <Tag
                 icon={<SmileOutlined />}
                 className="item-type"
                 color="#87d068"
-              >{item.tid === 1 ? 'react' : 'vue'}
+              >
+                {item.tid === 1 ? 'react' : 'vue'}
               </Tag>
             </Link>
            </Card>))
-        }
-      </ul>
+      }
     </div>
   );
 }

@@ -141,7 +141,7 @@ function DocTree() {
     return (
       <div>
         <Button disabled={!(userStore.user && userStore.user.role)} onClick={modeChange}>
-          {mode === 'preview' ? '预览' : '编辑'}
+          {mode === 'preview' ? '进入编辑' : '预览效果'}
         </Button>
       </div>
     );
@@ -149,7 +149,7 @@ function DocTree() {
 
   return (
     <div className="doc-wrapper">
-      <EditButton />
+      {userStore.user && <EditButton />}
       <Title level={3} className="doc-title">
         知识库
       </Title>

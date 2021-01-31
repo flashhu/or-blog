@@ -6,7 +6,7 @@ import { deleteArticleBatch } from '@api/article';
 import { toJS } from 'mobx';
 import { useArticleStore, useUserStore } from '@hooks/useStore';
 import { checkResponse } from '@util/request';
-import './edit.less'
+import './edit.less';
 
 function Edit({ transToTree }) {
   const [checked, setChecked] = useState(false);

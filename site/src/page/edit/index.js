@@ -38,7 +38,7 @@ function Edit() {
   const contentEditor = useRef();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [updateTime, setUpdateTime] = useState('');
   const articleStore = useArticleStore();
   const history = useHistory();
@@ -76,7 +76,9 @@ function Edit() {
     if (e.key.toLowerCase() === 's' && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
       e.preventDefault();
       // 只捕获渲染时所用值，直接使用 state，传入的为初始值，故使用 ref 获取最新值
-      autoSave();
+      if (autoSave()) {
+        message.success('文章已保存');
+      }
     }
   };
 
@@ -98,8 +100,9 @@ function Edit() {
       text: currContent || '',
     };
     const { pathname } = history.location;
+    const tag = false;
     const articleId = pathname.slice(pathname.lastIndexOf('/') + 1);
-    setLoading(true);
+    // setLoading(true);
     const res = await save(articleId, data);
     if (checkResponse(res) && res.data.id) {
       // 首次编辑，获取到 id 后变路由
@@ -107,9 +110,10 @@ function Edit() {
     }
     if (checkResponse(res)) {
       setUpdateTime(formatUTCDate(res.data.updateTime));
-      message.success('文章已保存');
+      tag = true;
     }
-    setLoading(false);
+    // setLoading(false);
+    return tag;
   };
 
   // 函数组件每次渲染结束之后，内部的变量都会被释放，重新渲染时所有的变量会被重新初始化
@@ -150,10 +154,9 @@ function Edit() {
         <Input ref={titleInput} value={title} onChange={handleTitleChange} className="edit-title" placeholder="请输入文章标题..." />
         <div className="right-box">
           <div className="article-status">
-            {loading ? '正保存到' : title || content ? '已保存至' : ''}
             <Button className="btn-draft" type="default" onClick={goToDraft}>草稿箱</Button>
           </div>
-          <Button className="btn-upload">一键上传</Button>
+          <Button className="btn-upload" onClick={() => { message.warn('尚未完工(*/ω＼*)'); }}>一键上传</Button>
           <PostArticleModal />
         </div>
       </div>

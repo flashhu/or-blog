@@ -1,27 +1,30 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getArticleDetail } from '../../api/article';
 import ReactMarkdown from 'react-markdown';
+import { getArticleDetail } from '@api/article';
+import { checkResponse } from '@util/request';
+import { formatUTCDate } from '@util/date';
 import CodeBlock from './codeHight';
 import './index.less';
-import { markdown } from 'react-syntax-highlighter/dist/esm/languages/prism';
 
 function Article() {
   const { id } = useParams();
   const [aritrcleDetail, setAritrcleDetail] = useState({});
+
   useEffect(() => {
     (async () => {
       const res = await getArticleDetail(id);
-      console.log(res);
-      if (res) {
+      if (checkResponse(res)) {
         setAritrcleDetail(res.data);
       }
     })();
   }, []);
 
   return (
-    <div className="markdown">
-      <div>
+    <div className="detail">
+      <div className="detail-wrapper">
+        <h1>{aritrcleDetail.title}</h1>
+        <p className="detail-time">{formatUTCDate(aritrcleDetail.time)}</p>
         <ReactMarkdown
           source={aritrcleDetail.text}
           renderers={{
@@ -30,9 +33,6 @@ function Article() {
           escapeHtml={false}
         />
       </div>
-      <div
-        className="wrapper"
-      />
     </div>
   );
 }

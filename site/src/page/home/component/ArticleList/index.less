@@ -1,45 +1,44 @@
 @import '@assets/style/variable.less';
 
 .article-list {
-  & ul {
-    padding: 0;
+  margin-top: @default-margin-top;
+
+  .card-title {
+    padding-left: 14px;
   }
+
   .article-item {
     display: flex;
     align-items: center;
     position: relative;
     list-style: none;
     padding: 10px 0 10px 15px;
-    border-bottom: 1px solid #999;
-    .item-time {
-      font-family: Georgia, Microsoft Yahei;
+    border-bottom: 1px solid rgba(153, 153, 153, .3);
+    margin-top: 10px;
+
+    .ant-card-meta-description {
+      font-family: @default-number-family;
       color: @normal-tip-color;
     }
+
     .item-title {
       margin-left: 20px;
     }
-    .article-item {
-        display: flex;
-        align-items: center;
-        position: relative;
-        list-style: none;
-        padding: 10px 0 10px 15px;
-        border-bottom: 1px solid #999999;
-        .item-time {
-            font-family: Georgia,Microsoft Yahei;
-            color: #ffffff;
-        }
-        .item-title {
-            margin-left: 20px;
-        }
 
-        .item-type {
-            position: absolute;
-            right: 10px;
-            bottom: 40px;
-            color:  #ffffff;
-            font-size: 12px;
-        }
+    .ant-card-cover {
+      width: 36%;
     }
+
+    .item-type {
+      position: absolute;
+      right: 10px;
+      bottom: 40px;
+      color: #fff;
+      font-size: 12px;
+    }
+  }
+
+  .article-item:first-child {
+    margin-top: 0;
   }
 }

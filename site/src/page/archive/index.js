@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 
 function Archive() {
   return (
-    <div>
+    <div style={{ paddingBottom: 30 }}>
       <DocTree />
     </div>
   );

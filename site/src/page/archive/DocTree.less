@@ -1,12 +1,10 @@
 @import '@assets/style/variable.less';
 
-
-
 .doc-wrapper {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background-color:#fff;
+  background-color: #fff;
   padding: @default-padding;
   margin-top: @default-margin-top;
 
@@ -18,13 +16,24 @@
   .doc-tree {
     // margin-top: 20px;
     font-size: medium;
-    padding: 20px 80px 200px;
+    padding: 20px 40px 200px;
 
     .leaf-title {
       width: 90%;
       display: inline-flex;
       justify-content: space-between;
 
+      .updated-date {
+        font-family: @default-number-family;
+        margin-left: 10px;
+        min-width: 85px;
+      }
+    }
+  }
+
+  @media screen and (max-width: 500px) {
+    .doc-tree {
+      padding: 20px 0 200px;
     }
   }
 }
