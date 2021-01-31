@@ -4,6 +4,7 @@ import { getArticleDetail } from '../../api/article'
 import ReactMarkdown from 'react-markdown';
 import CodeBlock from './codeHight';
 import './index.less';
+import { markdown } from 'react-syntax-highlighter/dist/esm/languages/prism';
 
 function Article() {
   const { id } = useParams();
@@ -19,7 +20,7 @@ function Article() {
   }, []);
 
   return (
-    <div>
+    <div className="markdown">
       <div>
         <ReactMarkdown
           source={aritrcleDetail.text}

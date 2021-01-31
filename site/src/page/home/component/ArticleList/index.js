@@ -3,15 +3,14 @@ import { Link, useParams } from 'react-router-dom';
 import { Tag, Card } from 'antd';
 import { useState, useEffect } from 'react'
 import { getArticleList } from '../../../../api/article'
-
+import './formatData'
 import {
   SmileOutlined,
 } from '@ant-design/icons';
-const { Meta } = Card;
+import formatDate from './formatData';
 
+const { Meta } = Card;
 function ArticleList() {
-  const mock = [];
-  let count = 1;  
   const [aritrcleList, setAritrcleList] = useState([]);
   useEffect(() => {
     (async () => {
@@ -22,14 +21,6 @@ function ArticleList() {
     })();
   },[]);
   console.log(aritrcleList);
-  for (let i = 0; i < 30; i++) {
-    mock.push({
-      id: count++,
-      title: '这是一个文章标题占位测试',
-      date: '2020-11-27',
-      type: '前端',
-    });
-  }
   return (
     <div className="article-list card-wrapper">
       <p className="card-title">文档列表</p>
@@ -40,16 +31,17 @@ function ArticleList() {
             hoverable
             className="article-item"
             key={item.id}
+            cover={<img src={`https://picsum.photos/id/${item.id}/60`}/>}
           >
             <Link to={`/article/${ item.id}`}>
               {/* <span className="item-time" >{item.date}</span>
             <span className="hvr-underline item-title">{item.title}</span> */}
-              <Meta title={item.title} description={item.text} />
+              <Meta title={item.title} description={formatDate(item.updated_at)} />
               <Tag
                 icon={<SmileOutlined />}
                 className="item-type"
                 color="magenta"
-              >{item.type}
+              >{item.tid}
               </Tag>
             </Link>
            </Card>))
