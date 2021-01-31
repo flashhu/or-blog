@@ -2,7 +2,7 @@ import './index.less';
 import { Link, useParams } from 'react-router-dom';
 import { Tag, Card } from 'antd';
 import { useState, useEffect } from 'react'
-import { getArticleList } from '../../../../api/article'
+import { getArticleListAll } from '../../../../api/article'
 import './formatData'
 import {
   SmileOutlined,
@@ -14,7 +14,7 @@ function ArticleList() {
   const [aritrcleList, setAritrcleList] = useState([]);
   useEffect(() => {
     (async () => {
-      const res = await getArticleList();
+      const res = await getArticleListAll();
       if (res) {
         setAritrcleList(res.data);
       }
@@ -36,12 +36,12 @@ function ArticleList() {
             <Link to={`/article/${ item.id}`}>
               {/* <span className="item-time" >{item.date}</span>
             <span className="hvr-underline item-title">{item.title}</span> */}
-              <Meta title={item.title} description={formatDate(item.updated_at)} />
+              <Meta title={item.title} description={formatDate(item.time)} />
               <Tag
                 icon={<SmileOutlined />}
                 className="item-type"
-                color="magenta"
-              >{item.tid}
+                color="#87d068"
+              >{item.tid === 1 ? 'react' : 'vue'}
               </Tag>
             </Link>
            </Card>))
