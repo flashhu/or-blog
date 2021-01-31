@@ -1,6 +1,8 @@
+import { observer } from 'mobx-react';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { NavLink, Redirect } from 'react-router-dom';
+import { message } from 'antd';
 import { useUserStore } from '@hooks/useStore';
 import logo from '@assets/book.svg';
 import './index.less';
@@ -12,7 +14,9 @@ function Menu({ data }) {
   const handleClickLogo = () => {
     if (userStore.user) {
       // 登出
-      userStore.logout();
+      window.localStorage.removeItem('token');
+      userStore.updateUserInfo(null);
+      message.success('登出成功');
     } else {
       // 登录
       setIsRedirect(true);
@@ -42,4 +46,4 @@ Menu.propTypes = {
   data: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)).isRequired,
 };
 
-export default Menu;
+export default observer(Menu);

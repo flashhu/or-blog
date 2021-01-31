@@ -9,7 +9,8 @@ import { debounce } from 'lodash';
 import hljs from 'highlight.js';
 import javascript from 'highlight.js/lib/languages/javascript';
 import { useArticleStore } from '@hooks/useStore';
-import { formateJSDate } from '@util/date';
+import { checkResponse } from '@util/request';
+import { getArticleDetail, getQiniuToken, save, uploadPicToQiniu } from '@api/article';
 import 'react-markdown-editor-lite/lib/index.css';
 import 'highlight.js/styles/github.css';
 import './index.less';
@@ -30,9 +31,6 @@ const mdParser = new MarkdownIt({
   },
 });
 
-const QINIU_SERVER = 'http://upload.qiniup.com/putb64/-1';
-const FILE_SERVER = 'http://file.flashhu.site/';
-
 function Edit() {
   const titleInput = useRef();
   const contentEditor = useRef();
@@ -49,17 +47,22 @@ function Edit() {
     (async () => {
       if (id !== 'new') {
         // 再编辑，填入原有内容
-        const res = await articleStore.getArticleDetail(id);
-        setTitle(res.data.title);
-        setContent({
-          html: res.data.html,
-          text: res.data.text,
-        });
+        const res = await getArticleDetail(id);
+        if (checkResponse(res)) {
+          setTitle(res.data.title);
+          setContent({
+            html: res.data.html,
+            text: res.data.text,
+          });
+        }
         debounceAutoSave.cancel();
       }
       if (!articleStore.qiniuToken) {
         // 获取七牛上传 token
-        await articleStore.getQiniuToken();
+        const res = await getQiniuToken();
+        if (checkResponse(res)) {
+          articleStore.updateQiniuToken(res.data.token);
+        }
       }
     })();
     // 设置监听， ctrl + s 自动保存
@@ -120,42 +123,29 @@ function Edit() {
       html: currContent ? currContent.html : '',
     };
     setLoading(true);
-    const res = await articleStore.save(id, data);
-    if (res && !res.error_code && res.data.id) {
+    const res = await save(id, data);
+    if (checkResponse(res) && res.data.id) {
       // 首次编辑，获取到 id 后变路由
       history.push(`/edit/${res.data.id}`);
     }
-    if (res && !res.error_code) {
+    if (checkResponse(res)) {
       message.success('已保存至草稿箱');
     }
     setLoading(false);
-  };
-
-  const urlSafeBase64Encode = (str) => {
-    // https://developer.qiniu.com/kodo/1276/data-format
-    return btoa(encodeURI(str)).replace(/\//g, '_').replace(/\+/g, '-');
   };
 
   const handleImageUpload = (file) => {
     return new Promise((resolve) => {
       const reader = new FileReader();
       reader.onload = (data) => {
-        const base64 = data.target.result.slice(data.target.result.indexOf(',') + 1);
-        const fileName = `image/${formateJSDate(new Date())}`;
-        const xhr = new XMLHttpRequest();
-        xhr.addEventListener('load', () => {
-          const res = JSON.parse(xhr.responseText);
-          resolve(`${FILE_SERVER}${res.key}`);
-          message.success('图片上传成功');
-        });
-        xhr.addEventListener('error', () => {
-          resolve('');
-          message.error('上传异常，请重试！');
-        });
-        xhr.open('POST', `${QINIU_SERVER}/key/${urlSafeBase64Encode(fileName)}`, true);
-        xhr.setRequestHeader('Content-Type', 'application/octet-stream');
-        xhr.setRequestHeader('Authorization', `UpToken ${articleStore.qiniuToken}`);
-        xhr.send(base64);
+        uploadPicToQiniu(data, articleStore.qiniuToken)
+          .then((path) => {
+            resolve(path);
+            message.success('图片上传成功');
+          })
+          .catch(() => {
+            message.error('上传异常，请重试！');
+          });
       };
       reader.readAsDataURL(file);
     });

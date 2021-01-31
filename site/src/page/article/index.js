@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import articleStore from '../../store/Article';
+import { getArticleDetail } from '../../api/article'
 import ReactMarkdown from 'react-markdown';
 import CodeBlock from './codeHight';
 import './index.less';
@@ -10,7 +10,7 @@ function Article() {
   const [aritrcleDetail, setAritrcleDetail] = useState({});
   useEffect(() => {
     (async () => {
-      const res = await articleStore.getArticleDetail(id);
+      const res = await getArticleDetail(id);
       console.log(res);
       if (res) {
         setAritrcleDetail(res.data);

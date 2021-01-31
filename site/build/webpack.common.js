@@ -113,6 +113,7 @@ const commonConfig = {
   resolve: {
     extensions: ['.js', '.json', '.jsx'],
     alias: {
+      "@api": resolve('../src/api'),
       "@page": resolve('../src/page'),
       "@component": resolve('../src/component'),
       "@util": resolve('../src/util'),

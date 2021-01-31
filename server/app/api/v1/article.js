@@ -55,7 +55,15 @@ router.get('/detail/:id', async (ctx) => {
     detail.dataValues.secretKey = detail.dataValues.secretKey ? "****": ''
     success(detail)
 })
-
+/**
+ * 获取所有的文章内容
+ * 密钥不明文显示，不传递
+ */
+router.get('/list', new Auth(9).m, async (ctx) => {
+    // const v = await new NotEmptyArticleValidator().validate(ctx)
+    const article = await Article.getArticleList()
+    success(article)
+})
 /**
  * 根据 id 删除草稿
  */

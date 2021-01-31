@@ -42,11 +42,20 @@ class Article extends Model {
      * @param {*} id 
      */
     static async getDetail(id) {
+        console.log(1);
         const detail = await Article.findByPk(id)
         if(!detail) {
             throw new NotFound("文章不存在");
         }
         return detail
+    }
+        /**
+     * 根据文章id获取详情
+     * @param {*} 
+     */
+    static async getArticleList() {
+        const article = await Article.findAll()
+        return article
     }
 
     /**

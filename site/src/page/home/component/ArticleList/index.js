@@ -2,29 +2,25 @@ import './index.less';
 import { Link, useParams } from 'react-router-dom';
 import { Tag, Card } from 'antd';
 import { useState, useEffect } from 'react'
-import { useArticleStore } from '@hooks/useStore'
+import { getArticleList } from '../../../../api/article'
 
 import {
   SmileOutlined,
 } from '@ant-design/icons';
-
 const { Meta } = Card;
 
 function ArticleList() {
   const mock = [];
-  let count = 1;
-  const { uid } = useParams()
-  const articleStore = useArticleStore()
-  const [aritrcleList, setAritrcleList] = useState({});
+  let count = 1;  
+  const [aritrcleList, setAritrcleList] = useState([]);
   useEffect(() => {
     (async () => {
-      const res = await articleStore.getArticleList(uid);
-      console.log(res);
+      const res = await getArticleList();
       if (res) {
         setAritrcleList(res.data);
       }
     })();
-  });
+  },[]);
   console.log(aritrcleList);
   for (let i = 0; i < 30; i++) {
     mock.push({
@@ -39,7 +35,7 @@ function ArticleList() {
       <p className="card-title">文档列表</p>
       <ul>
         {
-        mock.map((item) =>
+        aritrcleList.map((item) =>
           (<Card
             hoverable
             className="article-item"
@@ -48,7 +44,7 @@ function ArticleList() {
             <Link to={`/article/${ item.id}`}>
               {/* <span className="item-time" >{item.date}</span>
             <span className="hvr-underline item-title">{item.title}</span> */}
-              <Meta title={item.title} description={item.date} />
+              <Meta title={item.title} description={item.text} />
               <Tag
                 icon={<SmileOutlined />}
                 className="item-type"
