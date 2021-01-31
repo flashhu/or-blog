@@ -6,6 +6,7 @@ import { deleteArticleBatch } from '@api/article';
 import { toJS } from 'mobx';
 import { useArticleStore, useUserStore } from '@hooks/useStore';
 import { checkResponse } from '@util/request';
+import './edit.less'
 
 function Edit({ transToTree }) {
   const [checked, setChecked] = useState(false);
@@ -91,6 +92,7 @@ function Edit({ transToTree }) {
     return (
       <div style={{ visibility: checked ? 'visible' : 'hidden' }}>
         <Button
+          className="btn"
           onClick={() => {
             Modal.confirm({
               title: '你确定要删除吗，删除类型后，类型下的文件也将被删除，且无法恢复',
