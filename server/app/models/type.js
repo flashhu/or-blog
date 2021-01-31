@@ -12,6 +12,17 @@ class Type extends Model {
     return typeList;
   }
 
+  static async getTypeListByPid(pid) {
+    const list = await Type.findAll({
+      attributes: ["id", "level", "name"],
+      where: {
+        pid
+      },
+      order: [["updated_at"]],
+    });
+    return list;
+  }
+
   static async delTypeBatch(list) {
     const res = await Type.destroy({
       force: true,

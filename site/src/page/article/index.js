@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getArticleDetail } from '../../api/article'
+import { getArticleDetail } from '../../api/article';
 import ReactMarkdown from 'react-markdown';
 import CodeBlock from './codeHight';
 import './index.less';

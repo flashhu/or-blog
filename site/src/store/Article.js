@@ -18,20 +18,20 @@ class ArticleStore {
   articleList = [];
   treeData = [];
 
-  async loadTreeData(status = false){
+  async loadTreeData(status = false) {
     const typeData = await getTypeList();
     let articleData;
-    if(status){
+    if (status) {
       articleData = await getArticleListAll();
-    }else{
+    } else {
       articleData = await getArticleListPublic();
     }
     this.typeList = typeData ? typeData.data : null;
     this.articleList = articleData ? articleData.data : null;
   }
 
-  setTreeData(treeData){
-    this.treeData = treeData
+  setTreeData(treeData) {
+    this.treeData = treeData;
   }
 }
 

@@ -35,10 +35,13 @@ export function getArticleListAll() {
   return request('/article/list/all', 'GET');
 }
 
-export function renameArticle(info){
-  return request('/article/rename', 'PUT', info)
+export function renameArticle(info) {
+  return request('/article/rename', 'PUT', info);
 }
 
+export function postArticle(data) {
+  return request('/article/post', 'POST', data);
+}
 
 /**
  * 用于获取上传七牛云时要携带的 token

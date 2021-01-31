@@ -13,7 +13,7 @@ function PreView() {
       // 跳转到文章详情页面
       const id = target.key.split('-')[1];
       window.location.href = `/#/article/${id}`;
-    } 
+    }
   };
   return (
     <Tree

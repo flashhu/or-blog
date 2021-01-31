@@ -1,8 +1,9 @@
 const Router = require('koa-router')
 const { Article } = require('../../models/article')
-const { NotEmptyArticleValidator, PositiveIntegerValidator } = require('../../validators/validator')
+const { NotEmptyArticleValidator, PositiveIntegerValidator, PostArticleValidator } = require('../../validators/validator')
 const { Auth } = require('../../../middlewares/auth')
 const { success } = require('../../lib/helper')
+const { isNumber, parseInt } = require('lodash')
 
 const router = new Router({
     prefix: '/v1/article'
@@ -24,9 +25,9 @@ router.post('/save', new Auth(9).m, async (ctx) => {
     if(v.get('body.id')) {
         // 再编辑
         await Article.updateContent(v.get('body.id'), data);
-        success(null, {
+        success({
             update_time: new Date()
-        })
+        }, null)
     } else {
         // 新建
         const res = await Article.create(data)
@@ -35,6 +36,34 @@ router.post('/save', new Auth(9).m, async (ctx) => {
             update_time: new Date()
         })
     }
+})
+
+/**
+ * 发布文章
+ * @param {number} id 文章id，可选，未传则新增
+ * @param {number} status 状态
+ * @param {string} secretKey 密码
+ * @param {array} tag 标签 [1, 2, 'test']
+ * @param {array} type 类型 {pid, level, child: ['test']}
+ */
+router.post('/post', new Auth(9).m, async (ctx) => {
+    const v = await new PostArticleValidator().validate(ctx)
+    const newTags = [], oldTags = [];
+    for (tag of v.get('body.tag')) {
+        if(isNumber(tag)) {
+            oldTags.push(parseInt(tag));
+        } else {
+            newTags.push(tag);
+        }
+    }
+    await Article.postArticle(
+        newTags, 
+        v.get('body.type'), 
+        oldTags, 
+        parseInt(v.get('body.id')), 
+        { status: v.get('body.status'), secretKey: v.get('body.secretKey') }
+    );
+    success(null, '发布成功');
 })
 
 /**
@@ -67,7 +96,7 @@ router.get('/list', new Auth(9).m, async (ctx) => {
 /**
  * 根据 id 删除草稿
  */
-router.delete('/delete/:id', async (ctx) => {
+router.delete('/delete/:id', new Auth(9).m, async (ctx) => {
     await Article.deleteArticle(ctx.params.id)
     success(null, '删除成功');
 })
@@ -91,7 +120,6 @@ router.get('/list/all', new Auth(9).m,  async (ctx) => {
 /**
  * 批量删除文章
  */
-
 router.delete('/delete/batch/:list', new Auth(9).m, async (ctx) => {
     await Article.deleteArticleBatch(ctx.params.list.split('-'));
     success(null, '删除成功');
@@ -110,7 +138,6 @@ router.put('/rename', new Auth(9).m, async (ctx) => {
 /**
  * 返回所有，需要管理员权限
  */
-
 router.get('/list/secret', new Auth(9).m, async (ctx) => {
     const list = await Article.getArticleList(1);
     success(list);

@@ -29,11 +29,11 @@ function Edit({ transToTree }) {
    * @param {*} keys
    */
   const checkHandle = (keys) => {
-    const checkedKeys = keys['checked'];
-    const artkeys = [],
-      tykeys = [];
+    const checkedKeys = keys.checked;
+    const artkeys = [];
+    const tykeys = [];
     if (checkedKeys.length > 0) {
-      for (let key of checkedKeys) {
+      for (const key of checkedKeys) {
         if (typeof key === 'number') {
           tykeys.push(key);
         } else {
@@ -54,7 +54,8 @@ function Edit({ transToTree }) {
    * 将选中的节点删除，可能是类型，也可能是文章
    */
   const deleteItem = async () => {
-    let res1, res2;
+    let res1; let
+      res2;
     if (typeKeys.length > 0) {
       res1 = await deleteType(typeKeys.join('-'));
       if (!checkResponse(res1)) {

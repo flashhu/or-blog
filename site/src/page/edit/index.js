@@ -1,16 +1,18 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { observer } from 'mobx-react';
-import { Input, Button, message } from 'antd';
-import { LeftOutlined } from '@ant-design/icons';
+import { Input, Button, message, Tooltip } from 'antd';
+import { LeftOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { useHistory, useParams } from 'react-router-dom';
 import MarkdownIt from 'markdown-it';
 import MdEditor from 'react-markdown-editor-lite';
-import { debounce } from 'lodash';
+import debounce from 'lodash.debounce';
 import hljs from 'highlight.js';
 import javascript from 'highlight.js/lib/languages/javascript';
 import { useArticleStore } from '@hooks/useStore';
 import { checkResponse } from '@util/request';
 import { getArticleDetail, getQiniuToken, save, uploadPicToQiniu } from '@api/article';
+import { formatUTCDate } from '@util/date';
+import { PostArticleModal } from './component';
 import 'react-markdown-editor-lite/lib/index.css';
 import 'highlight.js/styles/github.css';
 import './index.less';
@@ -35,13 +37,12 @@ function Edit() {
   const titleInput = useRef();
   const contentEditor = useRef();
   const [title, setTitle] = useState('');
-  const [content, setContent] = useState(null);
+  const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
+  const [updateTime, setUpdateTime] = useState('');
   const articleStore = useArticleStore();
   const history = useHistory();
   const { id } = useParams();
-
-  const debounceAutoSave = debounce(() => autoSave(content, title), 3000);
 
   useEffect(() => {
     (async () => {
@@ -49,13 +50,10 @@ function Edit() {
         // 再编辑，填入原有内容
         const res = await getArticleDetail(id);
         if (checkResponse(res)) {
+          setUpdateTime(formatUTCDate(res.data.update_at));
           setTitle(res.data.title);
-          setContent({
-            html: res.data.html,
-            text: res.data.text,
-          });
+          setContent(res.data.text);
         }
-        debounceAutoSave.cancel();
       }
       if (!articleStore.qiniuToken) {
         // 获取七牛上传 token
@@ -74,24 +72,11 @@ function Edit() {
     };
   }, []);
 
-  useEffect(() => {
-    if (content || title) {
-      debounceAutoSave();
-    }
-    return debounceAutoSave.cancel();
-  }, [content, title, debounceAutoSave]);
-
   const handleKeyDown = (e) => {
     if (e.key.toLowerCase() === 's' && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
       e.preventDefault();
       // 只捕获渲染时所用值，直接使用 state，传入的为初始值，故使用 ref 获取最新值
-      const currTitle = titleInput.current.state.value;
-      const currContent = {
-        html: contentEditor.current.state.html,
-        text: contentEditor.current.state.text,
-      };
-      autoSave(currContent, currTitle);
-      debounceAutoSave.cancel();
+      autoSave();
     }
   };
 
@@ -103,35 +88,42 @@ function Edit() {
     history.push('/draft');
   };
 
-  const handleTitleChange = (e) => {
-    setTitle(e.target.value || '');
-  };
-
-  const handleEditorChange = ({ html, text }) => {
-    setContent({
-      html,
-      text,
-    });
-  };
-
   // 挂载时设置了监听，受函数组件特性影响，此处传参取值，非直接取 state
-  const autoSave = async (currContent, curTitle) => {
-    if (!(currContent || curTitle)) return;
+  const autoSave = async () => {
+    const currTitle = titleInput.current.state.value;
+    const currContent = contentEditor.current.state.text;
+    if (!(currContent || currTitle)) return;
     const data = {
-      title: curTitle || '无标题',
-      text: currContent ? currContent.text : '',
-      html: currContent ? currContent.html : '',
+      title: currTitle || '无标题',
+      text: currContent || '',
     };
+    const { pathname } = history.location;
+    const articleId = pathname.slice(pathname.lastIndexOf('/') + 1);
     setLoading(true);
-    const res = await save(id, data);
+    const res = await save(articleId, data);
     if (checkResponse(res) && res.data.id) {
       // 首次编辑，获取到 id 后变路由
       history.push(`/edit/${res.data.id}`);
     }
     if (checkResponse(res)) {
-      message.success('已保存至草稿箱');
+      setUpdateTime(formatUTCDate(res.data.updateTime));
+      message.success('文章已保存');
     }
     setLoading(false);
+  };
+
+  // 函数组件每次渲染结束之后，内部的变量都会被释放，重新渲染时所有的变量会被重新初始化
+  // 如不使用 useCallback 则变为统一延时后生效
+  const debounceAutoSave = useCallback(debounce(() => autoSave(), 1000), []);
+
+  const handleTitleChange = (e) => {
+    setTitle(e.target.value || '');
+    debounceAutoSave();
+  };
+
+  const handleEditorChange = ({ html, text }) => {
+    setContent(text);
+    debounceAutoSave();
   };
 
   const handleImageUpload = (file) => {
@@ -158,22 +150,30 @@ function Edit() {
         <Input ref={titleInput} value={title} onChange={handleTitleChange} className="edit-title" placeholder="请输入文章标题..." />
         <div className="right-box">
           <div className="article-status">
-            {loading ? '正保存到' : '已保存至'}
+            {loading ? '正保存到' : title || content ? '已保存至' : ''}
             <Button className="btn-draft" type="default" onClick={goToDraft}>草稿箱</Button>
           </div>
           <Button className="btn-upload">一键上传</Button>
-          <Button className="btn-submit" type="primary">发布文章</Button>
+          <PostArticleModal />
         </div>
       </div>
       <MdEditor
         id="md-editor"
         ref={contentEditor}
-        value={content ? content.text : ''}
-        style={{ minWidth: '800px', height: 'calc(100vh - 55px)' }}
+        value={content || ''}
         renderHTML={(text) => mdParser.render(text)}
         onChange={handleEditorChange}
         onImageUpload={handleImageUpload}
       />
+      {
+        updateTime &&
+        <div className="bottom-tipbar">
+          最近保存时间：{updateTime}
+          <Tooltip title="使用 Ctrl-S 或 Command-S 手动保存">
+            <QuestionCircleOutlined className="icon-help" />
+          </Tooltip>
+        </div>
+      }
     </div>
   );
 }

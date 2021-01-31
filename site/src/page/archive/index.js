@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import DocTree from './DocTree';
 import { observer } from 'mobx-react';
 
-function Archive() {  
+function Archive() {
   return (
     <div>
-      <DocTree />  
+      <DocTree />
     </div>
   );
 }

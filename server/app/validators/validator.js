@@ -10,6 +10,15 @@ class PositiveIntegerValidator extends LinValidator {
     }
 }
 
+class NonNegativeIntegerValidator extends LinValidator {
+    constructor() {
+        super()
+        this.id = [
+            new Rule('isInt', '参数需要非负整数', { min: 0 })
+        ]
+    }
+}
+
 class RegisterValidator extends LinValidator {
     constructor() {
         super()
@@ -91,10 +100,28 @@ class NotEmptyArticleValidator extends LinValidator {
     }
 }
 
+class PostArticleValidator extends LinValidator {
+    constructor() {
+        super()
+        this.id = [
+            new Rule('isInt', '需要正整数', { min: 1 })
+        ]
+        this.status = [
+            new Rule('matches', 'status 字段取值不符合规则', /^(1|2)$/)
+        ]
+        this.secretKey = [
+            new Rule('isOptional'),
+            new Rule('isLength', '密码长度至少为4位', { min: 4 })
+        ]
+    }
+}
+
 module.exports = {
     PositiveIntegerValidator,
+    NonNegativeIntegerValidator,
     RegisterValidator,
     TokenValidator,
     NotEmptyTokenValidator,
-    NotEmptyArticleValidator
+    NotEmptyArticleValidator,
+    PostArticleValidator
 }

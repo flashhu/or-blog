@@ -1,13 +1,13 @@
 import './index.less';
 import { Link, useParams } from 'react-router-dom';
 import { Tag, Card } from 'antd';
-import { useState, useEffect } from 'react'
-import { getArticleList } from '../../../../api/article'
-import './formatData'
+import { useState, useEffect } from 'react';
+import { getArticleList } from '../../../../api/article';
+import formatDate from './formatData';
 import {
   SmileOutlined,
 } from '@ant-design/icons';
-import formatDate from './formatData';
+
 
 const { Meta } = Card;
 function ArticleList() {
@@ -19,7 +19,7 @@ function ArticleList() {
         setAritrcleList(res.data);
       }
     })();
-  },[]);
+  }, []);
   console.log(aritrcleList);
   return (
     <div className="article-list card-wrapper">
@@ -31,7 +31,7 @@ function ArticleList() {
             hoverable
             className="article-item"
             key={item.id}
-            cover={<img src={`https://picsum.photos/id/${item.id}/60`}/>}
+            cover={<img src={`https://picsum.photos/id/${item.id}/60`} />}
           >
             <Link to={`/article/${ item.id}`}>
               {/* <span className="item-time" >{item.date}</span>
