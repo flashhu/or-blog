@@ -1,88 +1,149 @@
-const { Sequelize, Model } = require('sequelize')
-const bcrypt = require('bcryptjs')
-const { sequelize } = require('../../core/db')
-const { NotFound } = require('../../core/httpException')
+const { Sequelize, Model, Op } = require("sequelize");
+const bcrypt = require("bcryptjs");
+const { sequelize } = require("../../core/db");
+const { NotFound } = require("../../core/httpException");
 
 class Article extends Model {
-    /**
-     * 自动保存时更新文章内容
-     * @param {*} id 
-     * @param {*} data {title, html, text}
-     */
-    static async updateContent(id, data) {
-        const article = await Article.findByPk(id)
-        if (article) {
-            await article.update({
-                uid: data.uid,
-                title: data.title,
-                text: data.text,
-                html: data.html
-            })
-        }else {
-            throw new NotFound("文章不存在");
-        }
+  /**
+   * 自动保存时更新文章内容
+   * @param {*} id
+   * @param {*} data {title, html, text}
+   */
+  static async updateContent(id, data) {
+    const article = await Article.findByPk(id);
+    if (article) {
+      await article.update({
+        uid: data.uid,
+        title: data.title,
+        text: data.text,
+        html: data.html,
+      });
+    } else {
+      throw new NotFound("文章不存在");
     }
+  }
 
-    /**
-     * 获取草稿箱文章列表
-     */
-    static async getDraftList() {
-        const list = await Article.findAll({
-            attributes: ['id', 'title', ['updated_at', 'time']],
-            where: {
-                status: 0
-            },
-            order: [['updated_at', 'DESC']]
-        })
-        return list
-    }
+  /**
+   * 获取草稿箱文章列表
+   */
+  static async getDraftList() {
+    const list = await Article.findAll({
+      attributes: ["id", "title", ["updated_at", "time"]],
+      where: {
+        status: 0,
+      },
+      order: [["updated_at", "DESC"]],
+    });
+    return list;
+  }
 
-    /**
-     * 根据文章id获取详情
-     * @param {*} id 
-     */
-    static async getDetail(id) {
-        console.log(1);
-        const detail = await Article.findByPk(id)
-        if(!detail) {
-            throw new NotFound("文章不存在");
-        }
-        return detail
+  /**
+   * 根据文章id获取详情
+   * @param {*} id
+   */
+  static async getDetail(id) {
+    console.log(1);
+    const detail = await Article.findByPk(id);
+    if (!detail) {
+      throw new NotFound("文章不存在");
     }
-        /**
-     * 根据文章id获取详情
-     * @param {*} 
-     */
-    static async getArticleList() {
-        const article = await Article.findAll()
-        return article
-    }
+    return detail;
+  }
+  /**
+   * 根据文章id获取详情
+   * @param {*}
+   */
+  static async getArticleList() {
+    const article = await Article.findAll();
+    return article;
+  }
 
-    /**
-     * 根据 id 删除文章
-     * @param {*} id 
-     */
-    static async deleteArticle(id) {
-        const detail = await Article.findByPk(id)
-        if (!detail) {
-            throw new NotFound("文章不存在");
-        }
-        await Article.destroy({
-            // force: false 软删除，插入时间戳标记
-            // force: true  物理删除
-            force: false,
-            where: {
-                id
-            }
-        })
+  /**
+   * 根据 id 删除文章
+   * @param {*} id
+   */
+  static async deleteArticle(id) {
+    const detail = await Article.findByPk(id);
+    if (!detail) {
+      throw new NotFound("文章不存在");
     }
+    await Article.destroy({
+      // force: false 软删除，插入时间戳标记
+      // force: true  物理删除
+      force: false,
+      where: {
+        id,
+      },
+    });
+  }
+
+  /**
+   * 获取公开文章列表
+   */
+  static async getArticleListPublic() {
+    const list = await Article.findAll({
+      attributes: ["id", "title", "tid", "status", ["updated_at", "time"]],
+      where: {
+        status: 2,
+      },
+      order: [["updated_at"]],
+    });
+    return list;
+  }
+
+  /**
+   * 获取所有文章
+   */
+  static async getArticleListAll() {
+    const list = await Article.findAll({
+      attributes: ["id", "title", "tid", "status", ["updated_at", "time"]],
+      order: [["updated_at"]],
+    });
+    return list;
+  }
+
+  /**
+   * 根据id列表一次性删除多篇文章
+   * @param {}} list
+   */
+
+  static async deleteArticleBatch(list) {
+    const res = await Article.destroy({
+      where: {
+        id: {
+          [Op.or]: list,
+        },
+      },
+    });
+    console.log("res ", res);
+    return res;
+  }
+  
+  /**
+   * 重命名文章标题
+   * @param {*} info {id, newTitle}
+   */
+  static async renameArticle(info) {
+    const res = await Article.update(
+      {
+        title: info.newTitle,
+      },
+      {
+        where: {
+          id: info.id,
+        },
+      }
+    );
+    return res;
+  }
 }
 
-Article.init({
+Article.init(
+  {
     id: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
     },
     // 文章只有一作者
     uid: Sequelize.INTEGER,
@@ -92,23 +153,25 @@ Article.init({
     text: Sequelize.TEXT,
     // 加密口令
     secretKey: {
-        type: Sequelize.STRING,
-        set(val) {
-            // 生成盐
-            const salt = bcrypt.genSaltSync(10)
-            const key = bcrypt.hashSync(val, salt)
-            this.setDataValue('secretKey', key)
-        }
+      type: Sequelize.STRING,
+      set(val) {
+        // 生成盐
+        const salt = bcrypt.genSaltSync(10);
+        const key = bcrypt.hashSync(val, salt);
+        this.setDataValue("secretKey", key);
+      },
     },
     status: {
-        type: Sequelize.INTEGER,
-        defaultValue: 0
-    }
-}, {
+      type: Sequelize.INTEGER,
+      defaultValue: 0,
+    },
+  },
+  {
     sequelize,
-    tableName: 'article'
-})
+    tableName: "article",
+  }
+);
 
 module.exports = {
-    Article
-}
+  Article,
+};

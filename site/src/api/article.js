@@ -23,6 +23,23 @@ export function deleteArticle(id) {
   return request(`/article/delete/${id}`, 'DELETE');
 }
 
+export function deleteArticleBatch(list) {
+  return request(`/article/delete/batch/${list}`, 'DELETE');
+}
+
+export function getArticleListPublic() {
+  return request('/article/list/public', 'GET');
+}
+
+export function getArticleListAll() {
+  return request('/article/list/all', 'GET');
+}
+
+export function renameArticle(info){
+  return request('/article/rename', 'PUT', info)
+}
+
+
 /**
  * 用于获取上传七牛云时要携带的 token
  */

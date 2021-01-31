@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node-dev app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -19,6 +20,7 @@
     "koa-router": "^10.0.0",
     "lodash": "^4.17.20",
     "mysql2": "^2.2.5",
+    "node-dev": "^6.2.0",
     "qiniu": "^7.3.2",
     "require-directory": "^2.1.1",
     "sequelize": "^6.3.5"

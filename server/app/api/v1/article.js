@@ -67,9 +67,55 @@ router.get('/list', new Auth(9).m, async (ctx) => {
 /**
  * 根据 id 删除草稿
  */
-router.get('/delete/:id', async (ctx) => {
+router.delete('/delete/:id', async (ctx) => {
     await Article.deleteArticle(ctx.params.id)
     success(null, '删除成功');
 })
+
+/**
+ * 返回公开文章列表
+ */
+router.get('/list/public', async (ctx) => {
+    const list = await Article.getArticleListPublic();
+    success(list);
+})
+
+/**
+ * 返回所有文章，需要管理员权限
+ */
+router.get('/list/all', new Auth(9).m,  async (ctx) => {
+    const list = await Article.getArticleListAll();
+    success(list);
+})
+
+/**
+ * 批量删除文章
+ */
+
+router.delete('/delete/batch/:list', new Auth(9).m, async (ctx) => {
+    await Article.deleteArticleBatch(ctx.params.list.split('-'));
+    success(null, '删除成功');
+})
+
+/**
+ * 重命名文章标题
+ */
+router.put('/rename', new Auth(9).m, async (ctx) => {
+    console.log('body ', ctx.request.body);
+    await Article.renameArticle(ctx.request.body);
+    success(null, '修改成功');
+})
+
+
+/**
+ * 返回所有，需要管理员权限
+ */
+
+router.get('/list/secret', new Auth(9).m, async (ctx) => {
+    const list = await Article.getArticleList(1);
+    success(list);
+})
+
+
 
 module.exports = router

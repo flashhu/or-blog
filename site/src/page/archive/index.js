@@ -1,7 +1,13 @@
-function Archive() {
+import React, { useEffect, useState } from 'react';
+import DocTree from './DocTree';
+import { observer } from 'mobx-react';
+
+function Archive() {  
   return (
-    <div>Page Archive</div>
+    <div>
+      <DocTree />  
+    </div>
   );
 }
 
-export default Archive;
+export default observer(Archive);
