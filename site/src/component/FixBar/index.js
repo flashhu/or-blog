@@ -1,3 +1,4 @@
+import { observer } from 'mobx-react';
 import { UpOutlined, EditOutlined } from '@ant-design/icons';
 import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -33,4 +34,4 @@ FixBar.propTypes = {
   showTop: PropTypes.bool.isRequired,
 };
 
-export default FixBar;
+export default observer(FixBar);
