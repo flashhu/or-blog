@@ -84,15 +84,7 @@ router.get('/detail/:id', async (ctx) => {
     detail.dataValues.secretKey = detail.dataValues.secretKey ? "****": ''
     success(detail)
 })
-/**
- * 获取所有的文章内容
- * 密钥不明文显示，不传递
- */
-router.get('/list', new Auth(9).m, async (ctx) => {
-    // const v = await new NotEmptyArticleValidator().validate(ctx)
-    const article = await Article.getArticleList()
-    success(article)
-})
+
 /**
  * 根据 id 删除草稿
  */
@@ -103,9 +95,17 @@ router.delete('/delete/:id', new Auth(9).m, async (ctx) => {
 
 /**
  * 返回公开文章列表
+ * 加密则内容密码均以"****"代替
  */
 router.get('/list/public', async (ctx) => {
-    const list = await Article.getArticleListPublic();
+    let list = await Article.getArticleListPublic();
+    list.map(v => {
+        if(v.secretKey) {
+            v.dataValues.secretKey = '****';
+            v.text = '****';
+        }
+        return v;
+    })
     success(list);
 })
 
@@ -114,6 +114,20 @@ router.get('/list/public', async (ctx) => {
  */
 router.get('/list/all', new Auth(9).m,  async (ctx) => {
     const list = await Article.getArticleListAll();
+    success(list);
+})
+
+/**
+ * 返回所有已发布文章（公开/私密），需要管理员权限
+ */
+router.get('/list/allPost', new Auth(9).m, async (ctx) => {
+    let list = await Article.getArticleListAllPost();
+    list.map(v => {
+        if (v.secretKey) {
+            v.dataValues.secretKey = '****';
+        }
+        return v;
+    })
     success(list);
 })
 
@@ -129,7 +143,6 @@ router.delete('/delete/batch/:list', new Auth(9).m, async (ctx) => {
  * 重命名文章标题
  */
 router.put('/rename', new Auth(9).m, async (ctx) => {
-    console.log('body ', ctx.request.body);
     await Article.renameArticle(ctx.request.body);
     success(null, '修改成功');
 })
@@ -142,7 +155,5 @@ router.get('/list/secret', new Auth(9).m, async (ctx) => {
     const list = await Article.getArticleList(1);
     success(list);
 })
-
-
 
 module.exports = router

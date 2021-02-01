@@ -12,9 +12,10 @@ export function save(id, data) {
 export function getDraftList() {
   return request('/article/draft/list', 'GET');
 }
-export function getArticleList() {
-  return request('/article/list', 'GET');
-}
+
+// export function getArticleList() {
+//   return request('/article/list', 'GET');
+// }
 export function getArticleDetail(id) {
   return request(`/article/detail/${id}`, 'GET');
 }
@@ -33,6 +34,10 @@ export function getArticleListPublic() {
 
 export function getArticleListAll() {
   return request('/article/list/all', 'GET');
+}
+
+export function getArticleListAllPost() {
+  return request('/article/list/allPost', 'GET');
 }
 
 export function renameArticle(info) {

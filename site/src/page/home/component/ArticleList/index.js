@@ -1,24 +1,28 @@
+import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import { Tag, Card } from 'antd';
 import { useState, useEffect } from 'react';
-import { getArticleListAll } from '../../../../api/article';
+import { getArticleListPublic, getArticleListAllPost } from '@api/article';
 import { formatUTCDate } from '@util/date';
 import { SmileOutlined } from '@ant-design/icons';
+import { useUserStore } from '@hooks/useStore';
 import './index.less';
 
 const { Meta } = Card;
 
 function ArticleList() {
   const [aritrcleList, setAritrcleList] = useState([]);
+  const userStore = useUserStore();
 
   useEffect(() => {
     (async () => {
-      const res = await getArticleListAll();
+      const res = userStore.user ? await getArticleListAllPost() : await getArticleListPublic();
+      console.log(res);
       if (res) {
         setAritrcleList(res.data);
       }
     })();
-  }, []);
+  }, [userStore.user]);
 
   return (
     <div className="article-list">
@@ -52,4 +56,4 @@ function ArticleList() {
   );
 }
 
-export default ArticleList;
+export default observer(ArticleList);

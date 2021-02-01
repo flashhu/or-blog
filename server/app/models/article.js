@@ -1,4 +1,4 @@
-const { Sequelize, Model, Op } = require("sequelize");
+const { Sequelize, Model, Op, gt } = require("sequelize");
 const bcrypt = require("bcryptjs");
 const { sequelize } = require("../../core/db");
 const { NotFound } = require("../../core/httpException");
@@ -63,7 +63,7 @@ class Article extends Model {
       await article.setTags([...oldTags, ...newTagPk], { transaction: t });
       // 4. 更新 article 表
       await article.update({
-        tid: pid,
+        tid: pid || null,
         secretKey: data.secretKey,
         status: data.status
       }, { transaction: t });
@@ -95,14 +95,6 @@ class Article extends Model {
     }
     return detail;
   }
-  /**
-   * 根据文章id获取详情
-   * @param {*}
-   */
-  static async getArticleList() {
-    const article = await Article.findAll();
-    return article;
-  }
 
   /**
    * 根据 id 删除文章
@@ -128,11 +120,11 @@ class Article extends Model {
    */
   static async getArticleListPublic() {
     const list = await Article.findAll({
-      attributes: ["id", "title", "tid", "status", ["updated_at", "time"]],
+      attributes: ["id", "title", "tid", "status", "text", "secretKey", ["updated_at", "time"]],
       where: {
         status: 2,
       },
-      order: [["updated_at"]],
+      order: [["updated_at", "DESC"]],
     });
     return list;
   }
@@ -144,6 +136,22 @@ class Article extends Model {
     const list = await Article.findAll({
       attributes: ["id", "title", "tid", "status", ["updated_at", "time"]],
       order: [["updated_at"]],
+    });
+    return list;
+  }
+
+  /**
+   * 获取所有已发布文章
+   */
+  static async getArticleListAllPost() {
+    const list = await Article.findAll({
+      attributes: ["id", "title", "tid", "status", "text", "secretKey", ["updated_at", "time"]],
+      where: {
+        status: {
+          [Op.gt]: 0
+        }
+      },
+      order: [["updated_at", "DESC"]],
     });
     return list;
   }
