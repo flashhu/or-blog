@@ -17,15 +17,16 @@ function Menu({ data }) {
       window.localStorage.removeItem('token');
       userStore.updateUserInfo(null);
       message.success('登出成功');
+      
     } else {
       // 登录
       setIsRedirect(true);
     }
   };
-
+  console.log(isRedirect);
   return (
     <header className="header-wrapper">
-      {isRedirect && <Redirect to="/login" />}
+      {isRedirect && <Redirect to="/login"/>}
       <div className="header-content">
         <div className="logo-wrapper">
           <img className="logo" src={logo} onClick={handleClickLogo} />

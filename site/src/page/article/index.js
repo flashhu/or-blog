@@ -19,6 +19,8 @@ function Article() {
       }
     })();
   }, []);
+  // const data1 = window.localStorage.getItem("token");
+  // console.log(data1);
 
   return (
     <div className="detail">
