@@ -1,3 +1,4 @@
+import { observer } from 'mobx-react';
 import { CommitStat, ArticleList } from './component';
 import './index.less';
 
@@ -10,4 +11,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default observer(Home);

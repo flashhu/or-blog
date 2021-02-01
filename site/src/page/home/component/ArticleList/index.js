@@ -1,10 +1,12 @@
+import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import { Tag, Card } from 'antd';
 import { useState, useEffect } from 'react';
-import { getArticleListAll, getArticleListPublic } from '../../../../api/article';
-import { getTagList } from '../../../../api/tag'
+import { getArticleListPublic, getArticleListAllPost } from '@api/article';
+import { getTagList } from '@api/tag'
 import { formatUTCDate } from '@util/date';
 import { SmileOutlined } from '@ant-design/icons';
+import { useUserStore } from '@hooks/useStore';
 import './index.less';
 
 const { Meta } = Card;
@@ -12,33 +14,27 @@ const { Meta } = Card;
 function ArticleList() {
   const [aritrcleList, setAritrcleList] = useState([]);
   const [tagList, setTagList] = useState([]);
+  const userStore = useUserStore();
 
   useEffect(() => {
     (async () => {
-      let res = [];
-      if (!window.localStorage.getItem("token")){
-        res = await getArticleListPublic();
-      } else {
-        res = await getArticleListAll();
-      }
+      const res = userStore.user ? await getArticleListAllPost() : await getArticleListPublic();
+      console.log(res);
       if (res) {
         setAritrcleList(res.data);
       }
       const tagRes = await getTagList();
-      if (tagRes) {
-        // console.log(tagRes.data);
-        setTagList(tagRes.data)
-      }
+      console.log(tagRes.data);
+      setTagList(tagRes.data)
     })();
-  }, []);
-  for (let i of aritrcleList) {
-    for ( let j of tagList) {
-      if (i.tid === j.id) {
+  }, [userStore.user]);
+  for (let i of aritrcleList){
+    for (let j of tagList){
+      if (i.tid === j.id){
         i.tag = j.name
       }
     }
   }
-  // console.log(aritrcleList);
   return (
     <div className="article-list">
       <p className="card-title">文档列表</p>
@@ -71,4 +67,4 @@ function ArticleList() {
   );
 }
 
-export default ArticleList;
+export default observer(ArticleList);
