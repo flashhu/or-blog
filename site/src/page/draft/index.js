@@ -67,7 +67,7 @@ function Draft() {
               删除
             </span>
           </div>
-          <div>{formatUTCDate(item.time)}</div>
+          <div className="item-time">{formatUTCDate(item.time)}</div>
          </div>))}
     </div>
   );

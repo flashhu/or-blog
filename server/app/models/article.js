@@ -89,7 +89,12 @@ class Article extends Model {
    * @param {*} id
    */
   static async getDetail(id) {
-    const detail = await Article.findByPk(id);
+    const detail = await Article.findOne({
+      include: Tag,
+      where: {
+        id
+      },
+    });
     if (!detail) {
       throw new NotFound("文章不存在");
     }

@@ -38,8 +38,8 @@ function Edit() {
   const contentEditor = useRef();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  // const [loading, setLoading] = useState(false);
   const [updateTime, setUpdateTime] = useState('');
+  const [options, setOptions] = useState(null);
   const articleStore = useArticleStore();
   const history = useHistory();
   const { id } = useParams();
@@ -50,9 +50,13 @@ function Edit() {
         // 再编辑，填入原有内容
         const res = await getArticleDetail(id);
         if (checkResponse(res)) {
+          const tags = res.data.tags.map((v) => `${v.id }`);
+          // 发布模态框需要 id 以便修改原选项再获取新选项列表
+          const types = res.data.types || [];
           setUpdateTime(formatUTCDate(res.data.update_at));
           setTitle(res.data.title);
           setContent(res.data.text);
+          setOptions({ tags, types });
         }
       }
       if (!articleStore.qiniuToken) {
@@ -102,7 +106,6 @@ function Edit() {
     const { pathname } = history.location;
     const tag = false;
     const articleId = pathname.slice(pathname.lastIndexOf('/') + 1);
-    // setLoading(true);
     const res = await save(articleId, data);
     if (checkResponse(res) && res.data.id) {
       // 首次编辑，获取到 id 后变路由
@@ -112,7 +115,6 @@ function Edit() {
       setUpdateTime(formatUTCDate(res.data.updateTime));
       tag = true;
     }
-    // setLoading(false);
     return tag;
   };
 
@@ -157,7 +159,10 @@ function Edit() {
             <Button className="btn-draft" type="default" onClick={goToDraft}>草稿箱</Button>
           </div>
           <Button className="btn-upload" onClick={() => { message.warn('尚未完工(*/ω＼*)'); }}>一键上传</Button>
-          <PostArticleModal />
+          <PostArticleModal
+            defaultTags={options ? options.tags : []}
+            defaultTypes={options ? options.types : []}
+          />
         </div>
       </div>
       <MdEditor

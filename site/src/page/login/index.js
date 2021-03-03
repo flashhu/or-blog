@@ -14,7 +14,7 @@ function Login() {
   const onFinish = async (values) => {
     const res = await login(values);
     if (checkResponse(res)) {
-      window.localStorage.setItem('token', res.data.token);
+      window.localStorage.setItem('or_blog_token', res.data.token);
       userStore.updateUserInfo({ name: values.name, role: res.data.role });
       message.success('登录成功');
       // history.goBack();

@@ -8,9 +8,9 @@ const router = new Router({
 })
 
 /**
- * 获取所有标签列表(管理员权限)
+ * 获取所有标签列表
  */
-router.get('/list', new Auth(9).m, async (ctx) => {
+router.get('/list', async (ctx) => {
     const list = await Tag.getTagList()
     success(list)
 })

@@ -26,7 +26,7 @@ function App() {
 
   useEffect(() => {
     (async () => {
-      if (window.localStorage.token && !userStore.user) {
+      if (window.localStorage.or_blog_token && !userStore.user) {
         const res = await loginWithToken();
         if (checkResponse(res)) {
           userStore.updateUserInfo(res.data);

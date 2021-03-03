@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Tag, Card } from 'antd';
 import { useState, useEffect } from 'react';
 import { getArticleListPublic, getArticleListAllPost } from '@api/article';
-import { getTagList } from '@api/tag'
+import { getTagList } from '@api/tag';
 import { formatUTCDate } from '@util/date';
 import { SmileOutlined } from '@ant-design/icons';
 import { useUserStore } from '@hooks/useStore';
@@ -17,24 +17,32 @@ function ArticleList() {
   const userStore = useUserStore();
 
   useEffect(() => {
-    (async () => {
-      const res = userStore.user ? await getArticleListAllPost() : await getArticleListPublic();
-      console.log(res);
-      if (res) {
-        setAritrcleList(res.data);
-      }
-      const tagRes = await getTagList();
-      console.log(tagRes.data);
-      setTagList(tagRes.data)
-    })();
+    getArticleList();
+  }, []);
+
+  useEffect(() => {
+    getArticleList();
   }, [userStore.user]);
-  for (let i of aritrcleList){
-    for (let j of tagList){
-      if (i.tid === j.id){
-        i.tag = j.name
+
+  for (const i of aritrcleList) {
+    for (const j of tagList) {
+      if (i.tid === j.id) {
+        i.tag = j.name;
       }
     }
   }
+
+  const getArticleList = async () => {
+    // 根据是否已登录，取对应的文章列表
+    const res = userStore.user ? await getArticleListAllPost() : await getArticleListPublic();
+    if (res) {
+      setAritrcleList(res.data);
+    }
+    const tagRes = await getTagList();
+    console.log(tagRes);
+    // setTagList(tagRes.data)
+  };
+
   return (
     <div className="article-list">
       <p className="card-title">文档列表</p>

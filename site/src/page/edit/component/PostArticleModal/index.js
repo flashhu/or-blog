@@ -6,6 +6,7 @@ import { getTagList } from '@api/tag';
 import { postArticle } from '@api/article';
 import { getTypeListByPid } from '@api/type';
 import { checkResponse } from '@util/request';
+import { usePrevious } from '@hooks/usePrevious';
 import './index.less';
 
 const { Option } = Select;
@@ -16,16 +17,21 @@ const tip = {
   type: '用于组织文档树，层级最大为三层，根据你习惯的分类方式定义吧~',
 };
 
+// 用于设置 AutoComplete 的 placeholder
+const acPlaceHolder = ['一级类别', '二级类别', '三级类别'];
+// 用于表示待处理类别, 对应 L162 表述情况
+const prefixTag = '- [ ]';
+
 const checkTypeId = (val) => {
-  return val && typeof (val) === 'number';
+  return val && typeof (val) === 'object';
 };
 
-const getExistedLevel = (first, second, third) => {
+const getExistedLevel = (value) => {
   // 取最小层级，用于后端判断 pid => level为0，表示三层都是新建
-  // 当值为字符串时，表示为新建层级
-  const types = [0, first, second, third];
-  const level = checkTypeId(third) ? 3 : checkTypeId(second) ? 2 : checkTypeId(first) ? 1 : 0;
-  const pid = types[level];
+  // 当值为对象{id, name}时，表示为新建层级
+  const types = [0, ...value];
+  const level = checkTypeId(value[2]) ? 3 : checkTypeId(value[1]) ? 2 : checkTypeId(value[0]) ? 1 : 0;
+  const pid = types[level].id || 0;
   const child = types.filter((item, index) => (index > level) && item);
   return { pid, level: level + 1, child };
 };
@@ -50,60 +56,79 @@ const OptionTitle = ({ title, tipMsg }) => (
   </p>
 );
 
-function PostArticleModal() {
+function PostArticleModal({ defaultTags, defaultTypes }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   // 文章状态 => 0：草稿；1：私密发布；2：公开发布（包含带密码发布）
   const [status, setStatus] = useState(2);
   const [secretKey, setSecretKey] = useState('');
-  // type => 如为数字，表示选中已有项 id；字符串表示新类
-  const [firstType, setFirstType] = useState('');
-  const [secondType, setSecondType] = useState('');
-  const [thirdType, setThirdType] = useState('');
+  // type => 如为{id, name}, 表示选中已有项；如为字符串，表示新类
+  const [types, setTypes] = useState(new Array(3).fill(''));
   const [tags, setTags] = useState([]);
   // 存放下拉框数据
+  const [typeOptions, setTypeOptions] = useState(new Array(3).fill([]));
   const [tagOptions, setTagOptions] = useState([]);
-  const [firstTypeOptions, setFirstTypeOptions] = useState([]);
-  const [secondTypeOptions, setSecondTypeOptions] = useState([]);
-  const [thirdTypeOptions, setThirdTypeOptions] = useState([]);
   const history = useHistory();
+  const prevTypes = usePrevious(types);
 
   useEffect(() => {
     (async () => {
+      // 获取可选标签列表
       const tagRes = await getTagList();
       if (checkResponse(tagRes)) {
         setTagOptions(tagRes.data);
       }
+      // 获取可取一级类别列表
       const ftRes = await getTypeListByPid(0);
       if (checkResponse(ftRes)) {
         const tmp = formatAcOption(ftRes.data);
-        setFirstTypeOptions(tmp);
+        setTypeOptions(typeOptions.map((item, index) => (index === 0 ? tmp : item)));
       }
     })();
   }, []);
 
   useEffect(() => {
-    (async () => {
-      if (typeof (firstType) === 'number') {
-        const stRes = await getTypeListByPid(firstType);
-        if (checkResponse(stRes)) {
-          const tmp = formatAcOption(stRes.data);
-          setSecondTypeOptions(tmp);
-        }
-      }
-    })();
-  }, [firstType]);
+    if (defaultTags.length) {
+      // 自动填入已选标签，设为默认选中项
+      setTags(defaultTags);
+    }
+  }, [defaultTags]);
 
   useEffect(() => {
     (async () => {
-      if (typeof (secondType) === 'number') {
-        const ttRes = await getTypeListByPid(secondType);
-        if (checkResponse(ttRes)) {
-          const tmp = formatAcOption(ttRes.data);
-          setThirdTypeOptions(tmp);
-        }
+      if (defaultTypes.length) {
+        // 自动填入已选类别
+        const newTypes = types.map((item, index) => {
+          return defaultTypes.length > index ? defaultTypes[index] : item;
+        });
+        setTypes(newTypes);
       }
     })();
-  }, [secondType]);
+  }, [defaultTypes]);
+
+  useEffect(() => {
+    (async () => {
+      // 使用 Promise.all 所以此时是错位的，如第一位放的为获取到的第二列表的选项
+      const newTypeOptions = await Promise.all(types.map(async (item, i) => {
+        if (i < 2 && (!prevTypes || prevTypes[i] !== item)) {
+          if (typeof types[i] === 'object') {
+            // 1. 变为已有某一选项
+            const res = await getTypeListByPid(types[i].id);
+            if (checkResponse(res)) {
+              return formatAcOption(res.data);
+            }
+          } else {
+            // 2. 变为新建项，清空后续
+            return [];
+          }
+        }
+        // 3. 未改变，保留原有选项
+        return typeOptions[i + 1];
+      }));
+      newTypeOptions.unshift(typeOptions[0]);
+      newTypeOptions.pop();
+      setTypeOptions(newTypeOptions);
+    })();
+  }, [types]);
 
   const handleOk = async () => {
     // 1. 校验输入, 如为密码保护形式，密码必填
@@ -118,7 +143,7 @@ function PostArticleModal() {
       status: status === 3 ? 2 : status,
       secretKey: status === 3 ? secretKey : '',
       tag: tags,
-      type: getExistedLevel(firstType, secondType, thirdType),
+      type: getExistedLevel(types),
     };
     const res = await postArticle(data);
     if (checkResponse(res)) {
@@ -128,25 +153,28 @@ function PostArticleModal() {
     setIsModalVisible(false);
   };
 
+  // 三个 AutoComplete 组件共用 level 区分对应哪一层级 0 => 一级类别
   const onChangeType = (level, data) => {
-    // https://github.com/ant-design/ant-design/issues/12334
+    // key 和 value 都需要唯一：https://github.com/ant-design/ant-design/issues/12334
     let selectItem = null;
-    switch (level) {
-      case 1:
-        selectItem = firstTypeOptions.filter((v) => v.value === data);
-        setFirstType(selectItem.length ? selectItem[0].id : data);
+    for (let i = 0; i < typeOptions[level].length; i++) {
+      if (typeOptions[level][i].value === data) {
+        selectItem = { name: data, id: typeOptions[level][i].id };
         break;
-      case 2:
-        selectItem = secondTypeOptions.filter((v) => v.value === data);
-        setSecondType(selectItem.length ? selectItem[0].id : data);
-        break;
-      case 3:
-        selectItem = thirdTypeOptions.filter((v) => v.value === data);
-        setThirdType(selectItem.length ? selectItem[0].id : data);
-        break;
-      default:
-        break;
+      }
     }
+    let newTypes = [];
+    if (level < 2 && selectItem) {
+      // 1. 选中已有类别, 之后层级的值清空
+      newTypes = types.map((item, index) => (index === level ? selectItem : index < level ? item : ''));
+    } else if (level < 2) {
+      // 2. 新增类别时，清空后续层级中已选中类别
+      newTypes = types.map((item, index) => (index === level ? data : index < level ? item : ''));
+    } else {
+      // 3. 最后一层级类别
+      newTypes = types.map((item, index) => (index === level ? selectItem || data : item));
+    }
+    setTypes(newTypes);
   };
 
   return (
@@ -191,6 +219,7 @@ function PostArticleModal() {
               mode="tags"
               className="option-input"
               placeholder="回车，新建标签"
+              defaultValue={defaultTags}
               onChange={(value) => { setTags(value); }}
             >
               {tagOptions.map((v) =>
@@ -202,35 +231,20 @@ function PostArticleModal() {
           <div className="post-option">
             <OptionTitle title="所属类别" tipMsg={tip.type} />
             <div className="option-input">
-              <AutoComplete
-                className="option-input-type"
-                options={firstTypeOptions}
-                placeholder="一级类别"
-                onChange={(val) => onChangeType(1, val)}
-                filterOption={(inputValue, option) =>
-                  option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-                }
-              />
-              <AutoComplete
-                className="option-input-type"
-                options={secondTypeOptions}
-                placeholder="二级类别"
-                disabled={firstType ? '' : '0'}
-                onChange={(val) => onChangeType(2, val)}
-                filterOption={(inputValue, option) =>
-                  option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-                }
-              />
-              <AutoComplete
-                className="option-input-type"
-                options={thirdTypeOptions}
-                placeholder="三级类别"
-                disabled={(firstType && secondType) ? '' : '0'}
-                onChange={(val) => onChangeType(3, val)}
-                filterOption={(inputValue, option) =>
-                  option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-                }
-              />
+              {typeOptions.map((item, index) =>
+                (<AutoComplete
+                  className="option-input-type"
+                  value={typeof types[index] === 'object' ? types[index].name : types[index]}
+                  key={acPlaceHolder[index]}
+                  options={item}
+                  placeholder={acPlaceHolder[index]}
+                  disabled={!index || types[index - 1] || defaultTypes.length > index + 1 ? '' : '0'}
+                  onChange={(val) => onChangeType(index, val)}
+                  defaultValue={defaultTypes.length > index ? defaultTypes[index].name : ''}
+                  filterOption={(inputValue, option) =>
+                    option.length && option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+                  }
+                />))}
             </div>
           </div>
         </div>

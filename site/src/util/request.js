@@ -23,7 +23,7 @@ const request = extend({
   prefix: API_SERVER,
   timeout: 15000, // 如超时，则请求中断，抛出异常
   headers: {
-    Authorization: encode(window.localStorage.getItem('token')),
+    Authorization: encode(window.localStorage.getItem('or_blog_token')),
   },
   errorHandler, // 错误处理
 });

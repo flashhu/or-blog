@@ -1,9 +1,9 @@
 const Router = require('koa-router')
 const { Article } = require('../../models/article')
+const { Type } = require('../../models/type')
 const { NotEmptyArticleValidator, PositiveIntegerValidator, PostArticleValidator } = require('../../validators/validator')
 const { Auth } = require('../../../middlewares/auth')
 const { success } = require('../../lib/helper')
-const { isNumber, parseInt } = require('lodash')
 
 const router = new Router({
     prefix: '/v1/article'
@@ -50,12 +50,13 @@ router.post('/post', new Auth(9).m, async (ctx) => {
     const v = await new PostArticleValidator().validate(ctx)
     const newTags = [], oldTags = [];
     for (tag of v.get('body.tag')) {
-        if(isNumber(tag)) {
+        if (/^\d+$/.test(tag)) {
             oldTags.push(parseInt(tag));
         } else {
             newTags.push(tag);
         }
     }
+    console.log(oldTags, newTags);
     await Article.postArticle(
         newTags, 
         v.get('body.type'), 
@@ -79,9 +80,16 @@ router.get('/draft/list', new Auth(9).m, async (ctx) => {
  * 密钥不明文显示，不传递
  */
 router.get('/detail/:id', async (ctx) => {
-    const v = await new PositiveIntegerValidator().validate(ctx)
-    const detail = await Article.getDetail(v.get('path.id'))
-    detail.dataValues.secretKey = detail.dataValues.secretKey ? "****": ''
+    const v = await new PositiveIntegerValidator().validate(ctx);
+    const detail = await Article.getDetail(v.get('path.id'));
+    if (detail.tid) {
+        const types = await Type.getParentTypeListByTid(detail.tid);
+        detail.dataValues.types = types;
+    }
+    detail.dataValues.tags = detail.Tags.map((v) => {return {id: v.id, name: v.name}});
+    delete detail.dataValues.Tags;
+    delete detail.dataValues.tid;
+    detail.dataValues.secretKey = detail.dataValues.secretKey ? "****": '';
     success(detail)
 })
 

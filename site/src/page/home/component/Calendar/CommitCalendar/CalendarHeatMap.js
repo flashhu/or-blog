@@ -1,7 +1,7 @@
 import React, { memo, useState } from 'react';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import ReactTooltip from 'react-tooltip';
-import './style.css'
+import './style.css';
 
 
 function shiftDate(date, numDays) {
@@ -31,7 +31,7 @@ function generateRandomValues(count, date = new Date()) {
   });
 }
 
-export default memo(function Calendar() {
+export default memo(() => {
   const [state, setState] = useState(generateRandomValues(200));
 
   const getTooltipDataAttrs = (value) => {
@@ -43,11 +43,11 @@ export default memo(function Calendar() {
     return {
       'data-tip': `${value.date.toISOString().slice(0, 10)} has count: ${value.count}`,
     };
-  }
+  };
 
   const handleClick = (value) => {
     alert(`You clicked on ${value.date.toISOString().slice(0, 10)} with count: ${value.count}`);
-  }
+  };
   return (
     <>
       <CalendarHeatmap
@@ -64,7 +64,7 @@ export default memo(function Calendar() {
       <ReactTooltip />
     </>
   );
-})
+});
 /**
  * startDate={new Date('2021-01-01')}
  * endDate={new Date('2021-12-31')}

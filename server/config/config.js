@@ -10,7 +10,7 @@ module.exports = {
     },
     security: {
         secretKey: "'dY!Ar#B7(GqCfrf!kgup4T[-", // 最好用随机字符串
-        expiresIn: 60 * 60 * 24 * 30 // 令牌过期时间
+        expiresIn: 60 * 60 * 24 * 3 // 令牌过期时间 3天
     },
     qiniu: {
         accessKey: "7upH0OfZVDGE_Nv3aFbvamKKfTApLFkd7QdSPjVl",
